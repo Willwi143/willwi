@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Willwi 官方網站｜音樂創作人，結合現代視覺與聽覺體驗，讓網站成為一場記憶與音符的旅程。">
+  <meta name="keywords" content="Willwi, 音樂人, 原創歌曲, 音樂作品, Willwi 官方網站">
+  <meta name="author" content="Willwi">
+  <meta property="og:image" content="https://willwi.com/images/willwi-profile.jpg" />
+  <title>Willwi｜敲敲大門</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+    }
+
+    #intro {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    #intro img {
+      width: 120px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    #bg-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 1;
+      display: none;
+    }
+
+    #main-content {
+      position: relative;
+      z-index: 2;
+      display: none;
+      padding: 2rem;
+      overflow-y: auto;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .section {
+      margin-bottom: 5rem;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .glow {
+      color: white;
+      text-shadow: 0 0 10px #fff, 0 0 20px #0ff;
+    }
+
+    #audio-control {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 99;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="intro" onclick="startExperience()">
+    <img src="caspar_logo.png" alt="Caspar Head Logo" />
+  </div>
+
+  <video id="bg-video" src="intro.mp4" autoplay muted></video>
+
+  <div id="main-content">
+    <button id="audio-control" onclick="toggleAudio()">🔇</button>
+
+    <div class="section glass">
+      <h1 class="glow">Willwi｜關於我</h1>
+      <img src="images/willwi-profile.jpg" style="width: 150px; border-radius: 50%;" alt="Willwi 音樂創作人肖像照" title="Willwi 專屬個人形象照" />
+      <p>我用音樂記錄無法言說的碎片。<br>這不是網站，是一次記憶的旅程。</p>
+    </div>
+
+    <div class="section glass">
+      <h2 class="glow">音樂平台</h2>
+      <p><a href="https://www.youtube.com/@Willwi143" target="_blank">YouTube</a> | <a href="https://open.spotify.com" target="_blank">Spotify</a> | <a href="https://music.apple.com" target="_blank">Apple Music</a></p>
+    </div>
+
+    <div class="section glass">
+      <h2 class="glow">聯絡與擁有者</h2>
+      <p>本站由 Willwi 設計與維護。內容版權皆屬創作者本人所有。</p>
+    </div>
+
+    <div class="section glass">
+      <h2 class="glow">WillBot（開發中）</h2>
+      <p>未來這裡會有一個能模仿我語氣、回答問題的小機器人。</p>
+    </div>
+  </div>
+
+  <audio id="bg-music" src="bgmusic.mp3" autoplay loop></audio>
+
+  <script>
+    const bgVideo = document.getElementById('bg-video');
+    const mainContent = document.getElementById('main-content');
+    const intro = document.getElementById('intro');
+    const bgMusic = document.getElementById('bg-music');
+    const audioControl = document.getElementById('audio-control');
+
+    function startExperience() {
+      intro.style.display = 'none';
+      bgVideo.style.display = 'block';
+      bgVideo.play();
+      setTimeout(() => {
+        mainContent.style.display = 'block';
+      }, 5000);
+    }
+
+    function toggleAudio() {
+      bgMusic.muted = !bgMusic.muted;
+      audioControl.innerText = bgMusic.muted ? '🔈' : '🔇';
+    }
+  </script>
+</body>
+</html>
