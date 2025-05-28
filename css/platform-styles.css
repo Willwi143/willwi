@@ -1,0 +1,52 @@
+/* 音樂平台區塊樣式 */
+.streaming-platforms {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.platform-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.platform-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: transform 0.3s ease;
+    text-align: center;
+    width: 120px;
+}
+
+.platform-link:hover {
+    transform: translateY(-5px);
+}
+
+.platform-logo {
+    height: 60px;
+    width: auto;
+    margin-bottom: 0.8rem;
+    object-fit: contain;
+}
+
+.platform-link span {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .platform-links {
+        gap: 1.5rem;
+    }
+    
+    .platform-logo {
+        height: 50px;
+    }
+}
