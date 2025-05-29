@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Willwi｜Only Once</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: "Noto Sans TC", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #caspar {
+      width: 200px;
+      height: 200px;
+      background-image: url('caspar_logo.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    #caspar:hover {
+      transform: scale(1.05);
+    }
+
+    #message {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 1.2rem;
+      max-width: 80%;
+      opacity: 0;
+      transition: opacity 1.2s ease-in;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      text-align: center;
+      width: 100%;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    #musicPlayer {
+      width: 250px;
+      background-color: #222;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 0 auto 10px auto;
+    }
+
+    .platform-links {
+      margin-top: 10px;
+    }
+
+    .platform-links a {
+      margin: 0 10px;
+      color: white;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    audio::-webkit-media-controls-panel {
+      background-color: #222;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="caspar" onclick="startExperience()"></div>
+  <div id="message">你今天能聽見這首歌，是因為你還活著。</div>
+
+  <footer>
+    <div id="musicPlayer">
+      <audio controls src="music.mp3"></audio>
+    </div>
+    <div class="platform-links">
+      <a href="#">YouTube</a>
+      <a href="#">Spotify</a>
+      <a href="#">Apple Music</a>
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+    </div>
+  </footer>
+
+  <script>
+    function startExperience() {
+      const message = document.getElementById('message');
+      message.style.opacity = 1;
+    }
+  </script>
+
+</body>
+</html>
