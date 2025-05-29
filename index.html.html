@@ -1,105 +1,1430 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Willwi｜Only Once</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Willwi 官方網站｜音樂創作人，結合現代視覺與聽覺體驗，讓網站成為一場記憶與音符的旅程。提供客製化歌曲創作服務。">
+  <meta name="keywords" content="Willwi, 音樂人, 原創歌曲, 音樂作品, Willwi 官方網站, 客製化歌曲, 訂製歌曲">
+  <meta name="author" content="Willwi">
+  <meta property="og:image" content="https://willwi.com/images/willwi-profile.jpg" />
+  <title>Willwi｜敲敲大門</title>
   <style>
-    body {
+    :root {
+      --primary-color: #0ff;
+      --secondary-color: #f0f;
+      --accent-color: #ff0;
+      --bg-color: #000;
+      --text-color: #fff;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-shadow: rgba(255, 255, 255, 0.2);
+      --card-radius: 20px;
+      --transition-speed: 0.5s;
+    }
+
+    html, body {
       margin: 0;
-      background-color: black;
-      color: white;
-      font-family: "Noto Sans TC", sans-serif;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Arial', sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      cursor: none; /* 隱藏默認游標 */
+    }
+
+    /* 自定義游標 */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: rgba(0, 255, 255, 0.5);
+      mix-blend-mode: difference;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, background-color 0.3s;
+      z-index: 9999;
+      box-shadow: 0 0 15px var(--primary-color);
+    }
+
+    .cursor-follower {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: transparent;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s, border-color 0.5s;
+      z-index: 9998;
+    }
+
+    #intro {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--bg-color);
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      z-index: 100;
+      cursor: pointer;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #intro img {
+      width: 120px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    #bg-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
       height: 100vh;
+      object-fit: cover;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+    }
+
+    #main-content {
+      position: relative;
+      z-index: 5;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+      padding: 2rem;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .section {
+      margin-bottom: 5rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: var(--card-radius);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 0 20px var(--glass-shadow);
+      transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
       overflow: hidden;
       position: relative;
     }
 
-    #caspar {
-      width: 200px;
-      height: 200px;
-      background-image: url('caspar_logo.png');
-      background-size: cover;
-      background-position: center;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: transform 0.3s ease-in-out;
-    }
-
-    #caspar:hover {
-      transform: scale(1.05);
-    }
-
-    #message {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 1.2rem;
-      max-width: 80%;
-      opacity: 0;
-      transition: opacity 1.2s ease-in;
-    }
-
-    footer {
+    .glass::before {
+      content: '';
       position: absolute;
-      bottom: 20px;
-      text-align: center;
-      width: 100%;
-      font-size: 0.9rem;
-      opacity: 0.9;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: skewX(-25deg);
+      transition: left 0.7s ease-out;
     }
 
-    #musicPlayer {
-      width: 250px;
-      background-color: #222;
-      padding: 10px;
-      border-radius: 10px;
-      margin: 0 auto 10px auto;
+    .glass:hover::before {
+      left: 150%;
+      transition: left 0.7s ease-out;
     }
 
-    .platform-links {
-      margin-top: 10px;
+    .glass:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 30px var(--glass-shadow);
     }
 
-    .platform-links a {
-      margin: 0 10px;
+    /* 增強霓虹文字效果 */
+    .glow {
       color: white;
-      text-decoration: none;
-      font-size: 0.95rem;
+      text-shadow: 
+        0 0 10px #fff, 
+        0 0 20px var(--primary-color),
+        0 0 30px var(--primary-color),
+        0 0 40px var(--primary-color);
+      position: relative;
+      display: inline-block;
+      animation: textPulse 3s infinite alternate;
+      transition: text-shadow 0.3s ease;
     }
 
-    audio::-webkit-media-controls-panel {
-      background-color: #222;
+    .glow:hover {
+      text-shadow: 
+        0 0 10px #fff, 
+        0 0 20px var(--secondary-color),
+        0 0 30px var(--secondary-color),
+        0 0 40px var(--secondary-color),
+        0 0 50px var(--secondary-color);
+      animation: textFlicker 0.5s infinite alternate;
+    }
+
+    @keyframes textPulse {
+      0% {
+        text-shadow: 
+          0 0 10px #fff, 
+          0 0 20px var(--primary-color),
+          0 0 30px var(--primary-color);
+      }
+      100% {
+        text-shadow: 
+          0 0 15px #fff, 
+          0 0 25px var(--primary-color),
+          0 0 35px var(--primary-color),
+          0 0 45px var(--primary-color);
+      }
+    }
+
+    @keyframes textFlicker {
+      0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+        opacity: 1;
+        text-shadow: 
+          0 0 10px #fff, 
+          0 0 20px var(--secondary-color),
+          0 0 30px var(--secondary-color),
+          0 0 40px var(--secondary-color);
+      }
+      20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+        opacity: 0.8;
+        text-shadow: none;
+      }
+    }
+
+    .glow::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: var(--primary-color);
+      filter: blur(8px);
+      opacity: 0.7;
+      z-index: -1;
+      animation: glowAfter 5s infinite alternate;
+    }
+
+    @keyframes glowAfter {
+      0% {
+        filter: blur(8px);
+        opacity: 0.7;
+      }
+      50% {
+        filter: blur(12px);
+        opacity: 0.9;
+      }
+      100% {
+        filter: blur(8px);
+        opacity: 0.7;
+      }
+    }
+
+    /* 文字互動效果 */
+    .interactive-text {
+      display: inline-block;
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    .interactive-text:hover {
+      transform: translateY(-3px);
+      color: var(--accent-color);
+    }
+
+    #audio-control {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 99;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-color);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #audio-control:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px var(--primary-color);
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .video-card {
+      position: relative;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      height: 0;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    }
+
+    .video-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      opacity: 0;
+      z-index: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    .video-card:hover {
+      transform: scale(1.05) translateY(-10px);
+      box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.3),
+        0 0 60px rgba(0, 255, 255, 0.1);
+      z-index: 2;
+    }
+
+    .video-card:hover::before {
+      opacity: 0.2;
+    }
+
+    .video-thumbnail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .video-card:hover .video-thumbnail {
+      transform: scale(1.1);
+    }
+
+    .video-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+      color: white;
+      transform: translateY(100%);
+      transition: transform 0.5s ease;
+      z-index: 2;
+    }
+
+    .video-card:hover .video-info {
+      transform: translateY(0);
+    }
+
+    .video-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(0,0,0,0.5);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      width: 60px;
+      height: 60px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 2;
+    }
+
+    .play-button::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-left: 25px solid white;
+      margin-left: 5px;
+    }
+
+    .video-card:hover .play-button {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    .play-button:hover {
+      background: rgba(0,0,0,0.8);
+      transform: translate(-50%, -50%) scale(1.1) !important;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+    }
+
+    .neon-border {
+      position: relative;
+    }
+
+    .neon-border::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: calc(var(--card-radius) + 3px);
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color), var(--primary-color));
+      background-size: 400% 400%;
+      z-index: -1;
+      filter: blur(5px);
+      animation: neonGlow 10s ease infinite;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .glass:hover .neon-border::after {
+      opacity: 1;
+    }
+
+    @keyframes neonGlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .audio-visualizer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      z-index: 4;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    @keyframes floatAnimation {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .floating {
+      animation: floatAnimation 6s ease-in-out infinite;
+    }
+
+    .parallax-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.1s ease-out;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .social-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .social-icon:hover {
+      transform: translateY(-5px) rotate(10deg);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
+    }
+
+    .social-icon::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .social-icon:hover::before {
+      opacity: 1;
+    }
+
+    .music-platforms {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .platform-icon {
+      width: 60px;
+      height: 60px;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .platform-icon:hover {
+      transform: scale(1.2) rotate(5deg);
+      filter: drop-shadow(0 0 15px var(--primary-color));
+    }
+
+    .certificate {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .certificate:hover {
+      transform: scale(1.03) translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 255, 255, 0.3);
+    }
+
+    /* 3D 翻轉效果 */
+    .flip-card {
+      perspective: 1000px;
+      width: 100%;
+      height: 200px;
+      margin-top: 2rem;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: var(--card-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    .flip-card-front {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+    }
+
+    .flip-card-back {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      transform: rotateY(180deg);
+    }
+
+    /* 滾動觸發動畫 */
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 文字動畫效果 */
+    .animated-text {
+      display: inline-block;
+      position: relative;
+    }
+
+    .animated-text span {
+      display: inline-block;
+      animation: float 2s ease-in-out infinite;
+      animation-delay: calc(0.1s * var(--i));
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* 互動式按鈕 */
+    .interactive-button {
+      padding: 0.8rem 1.5rem;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-top: 1rem;
+      z-index: 1;
+    }
+
+    .interactive-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .interactive-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .interactive-button:hover::before {
+      opacity: 1;
+    }
+
+    .interactive-button:active {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 客製化歌曲服務樣式 */
+    .custom-song-service {
+      position: relative;
+      overflow: hidden;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .service-highlight {
+      color: var(--accent-color);
+      font-weight: bold;
+      text-shadow: 0 0 10px var(--accent-color);
+    }
+
+    .service-card {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      border: 1px solid var(--primary-color);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        rgba(0, 255, 255, 0.1),
+        transparent,
+        transparent,
+        transparent
+      );
+      transform: rotate(30deg);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%) rotate(30deg);
+      }
+      100% {
+        transform: translateX(100%) rotate(30deg);
+      }
+    }
+
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+
+    .service-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+
+    .service-description {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 1rem;
+    }
+
+    .service-price {
+      font-weight: bold;
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    /* 頁尾版權宣告 */
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 3rem;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .footer p {
+      margin: 0.5rem 0;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: var(--accent-color);
+      text-shadow: 0 0 10px var(--accent-color);
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+      .video-grid, .service-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      .section {
+        margin-bottom: 3rem;
+      }
+
+      .music-platforms {
+        gap: 1rem;
+      }
+
+      .platform-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      .social-icons {
+        gap: 1rem;
+      }
+
+      .flip-card {
+        height: 250px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .video-grid, .service-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      #main-content {
+        padding: 1rem;
+      }
+
+      .platform-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .flip-card {
+        height: 300px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
 
-  <div id="caspar" onclick="startExperience()"></div>
-  <div id="message">你今天能聽見這首歌，是因為你還活著。</div>
+  <div id="intro" onclick="startExperience()">
+    <img src="images/caspar_logo.png.png" alt="Caspar Head Logo" />
+  </div>
 
-  <footer>
-    <div id="musicPlayer">
-      <audio controls src="music.mp3"></audio>
+  <div id="particles-js"></div>
+  
+  <video id="bg-video" src="background-video.mp4" muted></video>
+  
+  <canvas id="audio-visualizer" class="audio-visualizer"></canvas>
+
+  <div id="main-content">
+    <button id="audio-control" onclick="toggleAudio()">🔇</button>
+
+    <div class="section glass">
+      <div class="neon-border"></div>
+      <h1 class="glow" data-text="Willwi｜關於我">Willwi｜關於我</h1>
+      <div class="parallax-layer" data-speed="0.2">
+        <img src="images/willwi-profile.jpg" style="width: 150px; border-radius: 50%;" alt="Willwi 音樂創作人肖像照" title="Willwi 專屬個人形象照" class="floating" />
+      </div>
+      <p>
+        <span class="animated-text">
+          <span style="--i:1">我</span>
+          <span style="--i:2">用</span>
+          <span style="--i:3">音</span>
+          <span style="--i:4">樂</span>
+          <span style="--i:5">記</span>
+          <span style="--i:6">錄</span>
+          <span style="--i:7">無</span>
+          <span style="--i:8">法</span>
+          <span style="--i:9">言</span>
+          <span style="--i:10">說</span>
+          <span style="--i:11">的</span>
+          <span style="--i:12">碎</span>
+          <span style="--i:13">片</span>
+        </span>
+        <br>
+        <span class="interactive-text">這不是網站，是一次記憶的旅程。</span>
+      </p>
+      
+      <div class="fade-in-section">
+        <p class="interactive-text">大家好，我是 Willwi（陳威兒），一位來自台灣的音樂人與藝術家。我的創作核心融合了多語（中文、日文、韓文）的詩性美學，將 EDM 的節奏與 K-POP 的抒情元素巧妙結合。我的音樂探索人性、時間與孤獨等主題，希望能觸動內心深處的情感。</p>
+        
+        <p class="interactive-text">為了提升作品的專業度與國際能見度，我參與相關認證。我很榮幸獲得 Musixmatch 國際認證，這代表我的歌詞在全球音樂平台上將更加完整、精準。此外，我的 YouTube 頻道也已獲得官方藝術家頻道（OAC）認證，這對我在影音平台上的發展是一個重要的肯定。我的作品也收錄於 Google 知識圖譜，成為 Google 認證藝術家。</p>
+        
+        <p class="interactive-text">秉持著「音樂無界，夢想不滅」的信念。期待我的音樂能與您產生共鳴，並在您的生命中留下一些美好的印記。</p>
+      </div>
+      
+      <div class="social-icons">
+        <a href="https://facebook.com/WillwiChen" target="_blank" class="social-icon" title="Facebook">
+          <img src="images/facebook.png" alt="Facebook" />
+        </a>
+        <a href="https://instagram.com/willchen_0709" target="_blank" class="social-icon" title="Instagram">
+          <img src="images/instagram.png" alt="Instagram" />
+        </a>
+        <a href="https://x.com/wei84990" target="_blank" class="social-icon" title="X/Twitter">
+          <img src="images/twitter.png" alt="X/Twitter" />
+        </a>
+        <a href="https://threads.net/@willwichen" target="_blank" class="social-icon" title="Threads">
+          <img src="images/twitter.png" alt="Threads" />
+        </a>
+        <a href="https://facebook.com/chenwillwi" target="_blank" class="social-icon" title="Willwi's Lab">
+          <img src="images/facebook.png" alt="Willwi's Lab" />
+        </a>
+      </div>
+      
+      <button class="interactive-button" onclick="document.getElementById('custom-song-section').scrollIntoView({behavior: 'smooth'})">探索客製化歌曲服務</button>
     </div>
-    <div class="platform-links">
-      <a href="#">YouTube</a>
-      <a href="#">Spotify</a>
-      <a href="#">Apple Music</a>
-      <a href="#">Instagram</a>
-      <a href="#">Facebook</a>
-    </div>
-  </footer>
 
+    <div class="section glass fade-in-section">
+      <div class="neon-border"></div>
+      <h2 class="glow" data-text="最新作品">最新作品</h2>
+      <div class="video-grid">
+        <!-- 影片卡片將由JavaScript動態生成 -->
+      </div>
+    </div>
+
+    <!-- 客製化歌曲服務區塊 -->
+    <div id="custom-song-section" class="section glass fade-in-section">
+      <div class="neon-border"></div>
+      <h2 class="glow" data-text="客製化歌曲服務">客製化歌曲服務</h2>
+      <p class="interactive-text">讓您的故事、情感與回憶，化為永恆的旋律。提供<span class="service-highlight">專業訂製歌曲創作</span>，為您打造獨一無二的音樂作品。</p>
+      
+      <div class="service-grid">
+        <div class="service-card">
+          <div class="service-icon">🎵</div>
+          <h3 class="service-title">告白情歌</h3>
+          <p class="service-description">為您的愛情故事譜寫專屬旋律，打造獨特的告白方式，留下永恆的愛情印記。</p>
+          <p class="service-price">NT$ 15,000 起</p>
+          <button class="interactive-button" onclick="contactForService('告白情歌')">了解更多</button>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">🎂</div>
+          <h3 class="service-title">生日紀念歌</h3>
+          <p class="service-description">為重要的人創作專屬生日歌，融入個人特質與回憶，打造難忘的生日禮物。</p>
+          <p class="service-price">NT$ 12,000 起</p>
+          <button class="interactive-button" onclick="contactForService('生日紀念歌')">了解更多</button>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">💍</div>
+          <h3 class="service-title">婚禮主題曲</h3>
+          <p class="service-description">為您的婚禮打造專屬主題曲，記錄兩人的愛情故事，成為婚禮上最動人的時刻。</p>
+          <p class="service-price">NT$ 20,000 起</p>
+          <button class="interactive-button" onclick="contactForService('婚禮主題曲')">了解更多</button>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">🏢</div>
+          <h3 class="service-title">企業主題曲</h3>
+          <p class="service-description">為企業量身打造品牌主題曲，展現企業精神與文化，提升品牌識別度。</p>
+          <p class="service-price">NT$ 25,000 起</p>
+          <button class="interactive-button" onclick="contactForService('企業主題曲')">了解更多</button>
+        </div>
+      </div>
+      
+      <div class="custom-song-service">
+        <h3 class="glow" data-text="創作流程">創作流程</h3>
+        <ol>
+          <li class="interactive-text">初步溝通：了解您的需求、故事背景與期望</li>
+          <li class="interactive-text">概念發展：確定歌曲風格、主題與情感基調</li>
+          <li class="interactive-text">歌詞創作：根據您的故事撰寫專屬歌詞</li>
+          <li class="interactive-text">曲調創作：為歌詞譜寫獨特旋律</li>
+          <li class="interactive-text">編曲製作：專業編曲與音樂製作</li>
+          <li class="interactive-text">錄製完成：專業錄音與混音</li>
+          <li class="interactive-text">交付成品：提供高品質音樂檔案與歌詞</li>
+        </ol>
+        
+        <button class="interactive-button" onclick="document.getElementById('contact-section').scrollIntoView({behavior: 'smooth'})">立即諮詢</button>
+      </div>
+    </div>
+
+    <div class="section glass fade-in-section">
+      <div class="neon-border"></div>
+      <h2 class="glow" data-text="音樂平台">音樂平台</h2>
+      <div class="music-platforms">
+        <a href="https://music.youtube.com/channel/UC3Jj31PziWsxhgiHyDGlpAg" target="_blank" title="YouTube Music">
+          <img src="images/youtube-music-logo.png" alt="YouTube Music" class="platform-icon" />
+        </a>
+        <a href="https://open.spotify.com/artist/3ascZ8Rb2KDw4QyCy29Om4" target="_blank" title="Spotify">
+          <img src="images/spotify-logo.png" alt="Spotify" class="platform-icon" />
+        </a>
+        <a href="https://music.apple.com/profile/Willwi" target="_blank" title="Apple Music">
+          <img src="images/apple-music-logo.png" alt="Apple Music" class="platform-icon" />
+        </a>
+      </div>
+    </div>
+
+    <div class="section glass fade-in-section">
+      <div class="neon-border"></div>
+      <h2 class="glow" data-text="專業認證">專業認證</h2>
+      <p class="interactive-text">2025年3月獲得Musixmatch Academy認證畢業證書</p>
+      <img src="images/證書.jpeg" alt="Musixmatch Graduate Certificate" class="certificate" />
+    </div>
+
+    <div id="contact-section" class="section glass fade-in-section">
+      <div class="neon-border"></div>
+      <h2 class="glow" data-text="聯絡與商業合作">聯絡與商業合作</h2>
+      <p class="interactive-text">提供<span class="service-highlight">客製化歌曲創作</span>、<span class="service-highlight">音樂製作</span>與<span class="service-highlight">商業合作</span>服務。</p>
+      
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <h3 class="glow" data-text="聯絡我">聯絡我</h3>
+            <p>滑鼠懸停查看聯絡方式</p>
+          </div>
+          <div class="flip-card-back">
+            <h3>商業合作與客製化歌曲諮詢</h3>
+            <p>will@willwi.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section glass fade-in-section">
+      <div class="neon-border"></div>
+      <h2 class="glow" data-text="WillBot（開發中）">WillBot（開發中）</h2>
+      <p class="interactive-text">未來這裡會有一個能模仿我語氣、回答問題的小機器人。</p>
+    </div>
+
+    <!-- 頁尾版權宣告 -->
+    <footer class="footer">
+      <p>© 2025 陳威兒 版權所有</p>
+      <p>聯絡信箱：<a href="mailto:will@willwi.com">will@willwi.com</a></p>
+      <p>官方網站：<a href="https://www.willwi.com" target="_blank">www.willwi.com</a></p>
+    </footer>
+  </div>
+
+  <audio id="bg-music" src="說不出的再見 發行.mp3" loop></audio>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+  
   <script>
-    function startExperience() {
-      const message = document.getElementById('message');
-      message.style.opacity = 1;
-    }
-  </script>
+    // 自定義游標
+    const cursor = document.querySelector('.cursor');
+    const cursorFollower = document.querySelector('.cursor-follower');
+    
+    document.addEventListener('mousemove', (e) => {
+      gsap.to(cursor, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.1
+      });
+      
+      gsap.to(cursorFollower, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.3
+      });
+    });
+    
+    document.addEventListener('mousedown', () => {
+      cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+      cursorFollower.style.transform = 'translate(-50%, -50%) scale(0.8)';
+    });
+    
+    document.addEventListener('mouseup', () => {
+      cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+      cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
+    });
+    
+    // 互動元素游標效果
+    const interactiveElements = document.querySelectorAll('a, button, .video-card, .interactive-text, .glow, .social-icon, .platform-icon, .certificate, .flip-card, .service-card');
+    
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '30px';
+        cursor.style.height = '30px';
+        cursor.style.backgroundColor = 'rgba(255, 0, 255, 0.5)';
+        cursorFollower.style.width = '50px';
+        cursorFollower.style.height = '50px';
+        cursorFollower.style.borderColor = 'rgba(255, 0, 255, 0.5)';
+      });
+      
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '20px';
+        cursor.style.height = '20px';
+        cursor.style.backgroundColor = 'rgba(0, 255, 255, 0.5)';
+        cursorFollower.style.width = '40px';
+        cursorFollower.style.height = '40px';
+        cursorFollower.style.borderColor = 'rgba(0, 255, 255, 0.3)';
+      });
+    });
 
+    // YouTube 影片資料
+    const videos = [
+      {
+        id: 'GuxLiC-yx3Y',
+        title: '🌈《等愛》｜獻給永遠的李玟 Coco Lee',
+        duration: '7:05'
+      },
+      {
+        id: 'ZfBx4BoqbsA',
+        title: '🌈 再會の詩 就算只是為了送你走',
+        duration: '2:26'
+      },
+      {
+        id: 'FO00--NsQJc',
+        title: '🌈 自作自受-當北風吹散藉口，誰還記得我愛過',
+        duration: '3:28'
+      },
+      {
+        id: 'XRXWiaW33Lo',
+        title: '🌈 《裁縫師｜站台 No.2》一首為「來不及縫合的情感」所寫的歌',
+        duration: '3:29'
+      },
+      {
+        id: '89_VliKY8zQ',
+        title: '🌈時差遺憾| Willwi 原創詞曲 🎶 音樂，為愛而唱，這裡，沒有標籤',
+        duration: '4:44'
+      },
+      {
+        id: 'ZfBx4BoqbsA',
+        title: '🌈《禮貌的邊界》當愛變成禮貌的邊界 🎶 音樂，為愛而唱',
+        duration: '3:12'
+      },
+      {
+        id: '89_VliKY8zQ',
+        title: '🌈《禮貌的邊界》當愛變成禮貌的邊界 🎶 音樂，為愛而唱',
+        duration: '3:13'
+      },
+      {
+        id: 'GuxLiC-yx3Y',
+        title: '🌈 《愛而不得》｜Willwi 原創雙版本 🎶 音樂，為愛而唱',
+        duration: '4:21'
+      }
+    ];
+
+    // DOM 元素
+    const bgVideo = document.getElementById('bg-video');
+    const mainContent = document.getElementById('main-content');
+    const intro = document.getElementById('intro');
+    const bgMusic = document.getElementById('bg-music');
+    const audioControl = document.getElementById('audio-control');
+    const audioVisualizer = document.getElementById('audio-visualizer');
+    const sections = document.querySelectorAll('.section');
+    const videoGrid = document.querySelector('.video-grid');
+    const fadeInSections = document.querySelectorAll('.fade-in-section');
+
+    // 初始化粒子系統
+    function initParticles() {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 100,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": ["#0ff", "#f0f", "#ff0"]
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            },
+            "polygon": {
+              "nb_sides": 5
+            }
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 2,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#0ff",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": true,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 140,
+              "line_linked": {
+                "opacity": 1
+              }
+            },
+            "bubble": {
+              "distance": 400,
+              "size": 40,
+              "duration": 2,
+              "opacity": 8,
+              "speed": 3
+            },
+            "repulse": {
+              "distance": 200,
+              "duration": 0.4
+            },
+            "push": {
+              "particles_nb": 4
+            },
+            "remove": {
+              "particles_nb": 2
+            }
+          }
+        },
+        "retina_detect": true
+      });
+    }
+
+    // 初始化音頻視覺化
+    function initAudioVisualizer() {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const canvas = audioVisualizer;
+      const ctx = canvas.getContext('2d');
+      let audioSource = null;
+      
+      canvas.width = window.innerWidth;
+      canvas.height = 50;
+      
+      analyser.fftSize = 256;
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      const barWidth = (canvas.width / bufferLength) * 2.5;
+      let barHeight;
+      let x = 0;
+      
+      function renderFrame() {
+        requestAnimationFrame(renderFrame);
+        
+        x = 0;
+        
+        analyser.getByteFrequencyData(dataArray);
+        
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < bufferLength; i++) {
+          barHeight = dataArray[i] / 2;
+          
+          const r = 255 * (i / bufferLength);
+          const g = 255 * (i / bufferLength);
+          const b = 255;
+          
+          ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+          ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+          
+          x += barWidth + 1;
+        }
+      }
+      
+      if (bgMusic.src) {
+        audioSource = audioContext.createMediaElementSource(bgMusic);
+        audioSource.connect(analyser);
+        analyser.connect(audioContext.destination);
+        renderFrame();
+      }
+      
+      window.addEventListener('resize', function() {
+        canvas.width = window.innerWidth;
+      });
+    }
+
+    // 創建影片卡片
+    function createVideoCards() {
+      videos.forEach(video => {
+        const card = document.createElement('div');
+        card.className = 'video-card glass';
+        card.innerHTML = `
+          <div class="neon-border"></div>
+          <img class="video-thumbnail" src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" alt="${video.title}">
+          <div class="play-button"></div>
+          <div class="video-info">
+            <h3 class="video-title">${video.title}</h3>
+            <span class="video-duration">${video.duration}</span>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          window.open(`https://www.youtube.com/watch?v=${video.id}`, '_blank');
+        });
+        videoGrid.appendChild(card);
+      });
+    }
+
+    // 視差效果
+    function initParallax() {
+      const layers = document.querySelectorAll('.parallax-layer');
+      
+      document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        layers.forEach(layer => {
+          const speed = layer.getAttribute('data-speed');
+          const moveX = (x - 0.5) * 50 * speed;
+          const moveY = (y - 0.5) * 50 * speed;
+          
+          layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+      });
+    }
+
+    // 滾動動畫
+    function initScrollAnimation() {
+      window.addEventListener('scroll', () => {
+        sections.forEach(section => {
+          const sectionTop = section.getBoundingClientRect().top;
+          const windowHeight = window.innerHeight;
+          
+          if (sectionTop < windowHeight * 0.8) {
+            section.classList.add('visible');
+          }
+        });
+        
+        fadeInSections.forEach(section => {
+          const sectionTop = section.getBoundingClientRect().top;
+          const windowHeight = window.innerHeight;
+          
+          if (sectionTop < windowHeight * 0.8) {
+            section.classList.add('is-visible');
+          }
+        });
+      });
+    }
+
+    // 開始體驗
+    function startExperience() {
+      // 初始化音頻上下文（需要用戶交互）
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audioContext = new AudioContext();
+      
+      // 淡出介紹畫面
+      intro.style.opacity = '0';
+      setTimeout(() => {
+        intro.style.display = 'none';
+      }, 1000);
+      
+      // 播放背景影片
+      bgVideo.play();
+      bgVideo.style.opacity = '1';
+      
+      // 顯示主內容
+      setTimeout(() => {
+        mainContent.style.opacity = '1';
+        mainContent.style.transform = 'translateY(0)';
+        
+        // 顯示音頻可視化
+        audioVisualizer.style.opacity = '1';
+        
+        // 依次顯示各區塊
+        gsap.to(sections, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.2,
+          duration: 0.8,
+          ease: "power2.out"
+        });
+      }, 1000);
+      
+      // 播放背景音樂
+      bgMusic.play();
+      
+      // 影片結束後淡出
+      bgVideo.addEventListener('ended', () => {
+        bgVideo.style.opacity = '0';
+      });
+    }
+
+    // 切換音頻
+    function toggleAudio() {
+      bgMusic.muted = !bgMusic.muted;
+      audioControl.innerText = bgMusic.muted ? '🔈' : '🔇';
+    }
+
+    // 客製化歌曲服務聯絡
+    function contactForService(serviceType) {
+      alert(`感謝您對${serviceType}服務的興趣！請發送郵件至will@willwi.com，我們將盡快與您聯繫。`);
+    }
+
+    // 頁面載入完成後初始化
+    window.addEventListener('load', () => {
+      initParticles();
+      createVideoCards();
+      initParallax();
+      initScrollAnimation();
+      
+      // 初始化音頻視覺化（需要用戶交互後）
+      document.addEventListener('click', function initAudio() {
+        initAudioVisualizer();
+        document.removeEventListener('click', initAudio);
+      }, { once: true });
+      
+      // 觸發滾動檢查
+      setTimeout(() => {
+        window.dispatchEvent(new Event('scroll'));
+      }, 500);
+    });
+  </script>
 </body>
 </html>
