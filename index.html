@@ -1,1657 +1,318 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Willwi 官方網站｜音樂創作人，結合現代視覺與聽覺體驗，讓網站成為一場記憶與音符的旅程。提供客製化歌曲創作服務。">
-  <meta name="keywords" content="Willwi, 音樂人, 原創歌曲, 音樂作品, Willwi 官方網站, 客製化歌曲, 訂製歌曲">
-  <meta name="author" content="Willwi">
-  <meta property="og:image" content="https://willwi.com/images/willwi-profile.jpg" />
-  <title>Willwi｜敲敲大門</title>
-  <style>
-    :root {
-      --primary-color: #0ff;
-      --secondary-color: #f0f;
-      --accent-color: #ff0;
-      --bg-color: #000;
-      --text-color: #fff;
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
-      --glass-shadow: rgba(255, 255, 255, 0.2);
-      --card-radius: 20px;
-      --transition-speed: 0.5s;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: 'Arial', sans-serif;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      cursor: none; /* 隱藏默認游標 */
-    }
-
-    /* 自定義游標 */
-    .cursor {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background-color: rgba(0, 255, 255, 0.5);
-      mix-blend-mode: difference;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s, height 0.3s, background-color 0.3s;
-      z-index: 9999;
-      box-shadow: 0 0 15px var(--primary-color);
-    }
-
-    .cursor-follower {
-      position: fixed;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: transparent;
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: width 0.5s, height 0.5s, border-color 0.5s;
-      z-index: 9998;
-    }
-
-    #intro {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--bg-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      cursor: pointer;
-      transition: opacity 1s ease-in-out;
-    }
-
-    #intro img {
-      width: 120px;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.7; }
-      50% { transform: scale(1.1); opacity: 1; }
-    }
-
-    #particles-js {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-
-    #bg-video {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 2s ease-in-out;
-    }
-
-    #main-content {
-      position: relative;
-      z-index: 5;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-      padding: 2rem;
-      min-height: 100vh;
-      box-sizing: border-box;
-    }
-
-    .section {
-      margin-bottom: 5rem;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .glass {
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 2rem;
-      border-radius: var(--card-radius);
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 0 20px var(--glass-shadow);
-      transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .glass::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 50%;
-      height: 100%;
-      background: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      transform: skewX(-25deg);
-      transition: left 0.7s ease-out;
-    }
-
-    .glass:hover::before {
-      left: 150%;
-      transition: left 0.7s ease-out;
-    }
-
-    .glass:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 10px 30px var(--glass-shadow);
-    }
-
-    /* 增強霓虹文字效果 */
-    .glow {
-      color: white;
-      text-shadow: 
-        0 0 10px #fff, 
-        0 0 20px var(--primary-color),
-        0 0 30px var(--primary-color),
-        0 0 40px var(--primary-color);
-      position: relative;
-      display: inline-block;
-      animation: textPulse 3s infinite alternate;
-      transition: text-shadow 0.3s ease;
-    }
-
-    .glow:hover {
-      text-shadow: 
-        0 0 10px #fff, 
-        0 0 20px var(--secondary-color),
-        0 0 30px var(--secondary-color),
-        0 0 40px var(--secondary-color),
-        0 0 50px var(--secondary-color);
-      animation: textFlicker 0.5s infinite alternate;
-    }
-
-    @keyframes textPulse {
-      0% {
-        text-shadow: 
-          0 0 10px #fff, 
-          0 0 20px var(--primary-color),
-          0 0 30px var(--primary-color);
-      }
-      100% {
-        text-shadow: 
-          0 0 15px #fff, 
-          0 0 25px var(--primary-color),
-          0 0 35px var(--primary-color),
-          0 0 45px var(--primary-color);
-      }
-    }
-
-    @keyframes textFlicker {
-      0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
-        opacity: 1;
-        text-shadow: 
-          0 0 10px #fff, 
-          0 0 20px var(--secondary-color),
-          0 0 30px var(--secondary-color),
-          0 0 40px var(--secondary-color);
-      }
-      20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
-        opacity: 0.8;
-        text-shadow: none;
-      }
-    }
-
-    .glow::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0;
-      left: 0;
-      color: var(--primary-color);
-      filter: blur(8px);
-      opacity: 0.7;
-      z-index: -1;
-      animation: glowAfter 5s infinite alternate;
-    }
-
-    @keyframes glowAfter {
-      0% {
-        filter: blur(8px);
-        opacity: 0.7;
-      }
-      50% {
-        filter: blur(12px);
-        opacity: 0.9;
-      }
-      100% {
-        filter: blur(8px);
-        opacity: 0.7;
-      }
-    }
-
-    /* 文字互動效果 */
-    .interactive-text {
-      display: inline-block;
-      transition: transform 0.3s, color 0.3s;
-    }
-
-    .interactive-text:hover {
-      transform: translateY(-3px);
-      color: var(--accent-color);
-    }
-
-    #audio-control {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 99;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      color: var(--text-color);
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    #audio-control:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: scale(1.05);
-      box-shadow: 0 0 15px var(--primary-color);
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .video-card {
-      position: relative;
-      border-radius: var(--card-radius);
-      overflow: hidden;
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-      height: 0;
-      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    }
-
-    .video-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      opacity: 0;
-      z-index: 1;
-      transition: opacity 0.5s ease;
-    }
-
-    .video-card:hover {
-      transform: scale(1.05) translateY(-10px);
-      box-shadow: 
-        0 0 30px rgba(0, 255, 255, 0.3),
-        0 0 60px rgba(0, 255, 255, 0.1);
-      z-index: 2;
-    }
-
-    .video-card:hover::before {
-      opacity: 0.2;
-    }
-
-    .video-thumbnail {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .video-card:hover .video-thumbnail {
-      transform: scale(1.1);
-    }
-
-    .video-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 1rem;
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
-      color: white;
-      transform: translateY(100%);
-      transition: transform 0.5s ease;
-      z-index: 2;
-    }
-
-    .video-card:hover .video-info {
-      transform: translateY(0);
-    }
-
-    .video-title {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: bold;
-      text-shadow: 0 0 5px rgba(0,0,0,0.5);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-
-    .play-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
-      width: 60px;
-      height: 60px;
-      background: rgba(0,0,0,0.6);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-      z-index: 2;
-    }
-
-    .play-button::after {
-      content: '';
-      width: 0;
-      height: 0;
-      border-top: 15px solid transparent;
-      border-bottom: 15px solid transparent;
-      border-left: 25px solid white;
-      margin-left: 5px;
-    }
-
-    .video-card:hover .play-button {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-    }
-
-    .play-button:hover {
-      background: rgba(0,0,0,0.8);
-      transform: translate(-50%, -50%) scale(1.1) !important;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
-    }
-
-    .neon-border {
-      position: relative;
-    }
-
-    .neon-border::after {
-      content: '';
-      position: absolute;
-      top: -3px;
-      left: -3px;
-      right: -3px;
-      bottom: -3px;
-      border-radius: calc(var(--card-radius) + 3px);
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color), var(--primary-color));
-      background-size: 400% 400%;
-      z-index: -1;
-      filter: blur(5px);
-      animation: neonGlow 10s ease infinite;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .glass:hover .neon-border::after {
-      opacity: 1;
-    }
-
-    @keyframes neonGlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .audio-visualizer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 50px;
-      z-index: 4;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    @keyframes floatAnimation {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .floating {
-      animation: floatAnimation 6s ease-in-out infinite;
-    }
-
-    .parallax-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.1s ease-out;
-    }
-
-    /* 優化社交圖標樣式 */
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .social-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      margin: 0 10px;
-    }
-
-    .social-icon img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .social-icon:hover {
-      transform: translateY(-5px) rotate(10deg);
-      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
-    }
-
-    .social-icon::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .social-icon:hover::before {
-      opacity: 1;
-    }
-
-    /* 優化音樂平台圖標樣式 */
-    .music-platforms {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .platform-icon {
-      width: 50px;
-      height: 50px;
-      transition: transform 0.3s ease, filter 0.3s ease;
-      margin: 0 15px;
-    }
-
-    .platform-icon:hover {
-      transform: scale(1.2) rotate(5deg);
-      filter: drop-shadow(0 0 15px var(--primary-color));
-    }
-
-    .certificate {
-      max-width: 100%;
-      border-radius: 10px;
-      margin-top: 1.5rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .certificate:hover {
-      transform: scale(1.03) translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0, 255, 255, 0.3);
-    }
-
-    /* 3D 翻轉效果 */
-    .flip-card {
-      perspective: 1000px;
-      width: 100%;
-      height: 200px;
-      margin-top: 2rem;
-    }
-
-    .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.8s;
-      transform-style: preserve-3d;
-    }
-
-    .flip-card:hover .flip-card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .flip-card-front, .flip-card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      border-radius: var(--card-radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 1rem;
-      box-sizing: border-box;
-    }
-
-    .flip-card-front {
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid var(--glass-border);
-    }
-
-    .flip-card-back {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      color: white;
-      transform: rotateY(180deg);
-    }
-
-    /* 滾動觸發動畫 */
-    .fade-in-section {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-
-    .fade-in-section.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* 文字動畫效果 */
-    .animated-text {
-      display: inline-block;
-      position: relative;
-    }
-
-    .animated-text span {
-      display: inline-block;
-      animation: float 2s ease-in-out infinite;
-      animation-delay: calc(0.1s * var(--i));
-    }
-
-    @keyframes float {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
-    }
-
-    /* 互動式按鈕 */
-    .interactive-button {
-      padding: 0.8rem 1.5rem;
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-      border: none;
-      border-radius: 30px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      margin-top: 1rem;
-      z-index: 1;
-    }
-
-    .interactive-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: -1;
-    }
-
-    .interactive-button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .interactive-button:hover::before {
-      opacity: 1;
-    }
-
-    .interactive-button:active {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    /* 客製化歌曲服務樣式 */
-    .custom-song-service {
-      position: relative;
-      overflow: hidden;
-      padding: 2rem;
-      margin-top: 2rem;
-    }
-
-    .service-highlight {
-      color: var(--accent-color);
-      font-weight: bold;
-      text-shadow: 0 0 10px var(--accent-color);
-    }
-
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .service-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: var(--card-radius);
-      padding: 1.5rem;
-      border: 1px solid var(--glass-border);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .service-card::before {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-      z-index: -1;
-      border-radius: calc(var(--card-radius) + 2px);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .service-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .service-card:hover::before {
-      opacity: 1;
-    }
-
-    .service-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--primary-color);
-      text-shadow: 0 0 10px var(--primary-color);
-    }
-
-    .service-title {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: var(--text-color);
-    }
-
-    .service-price {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      color: var(--accent-color);
-    }
-
-    .service-features {
-      list-style-type: none;
-      padding: 0;
-      margin: 0 0 1.5rem 0;
-    }
-
-    .service-features li {
-      margin-bottom: 0.5rem;
-      position: relative;
-      padding-left: 1.5rem;
-    }
-
-    .service-features li::before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      color: var(--primary-color);
-    }
-
-    .service-description {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-top: 1rem;
-    }
-
-    /* 專業認證區塊樣式 */
-    .certification-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .certification-left {
-      flex: 1;
-      min-width: 300px;
-    }
-
-    .certification-right {
-      flex: 1;
-      min-width: 300px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .certification-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      margin: 0.5rem 0;
-      font-weight: bold;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    }
-
-    /* 音樂播放器樣式 */
-    .music-player {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 2rem;
-      padding: 1rem;
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 20px;
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-    }
-
-    .player-controls {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .play-pause-btn {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .play-pause-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
-    }
-
-    .volume-control {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .volume-icon {
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
-
-    .volume-icon:hover {
-      color: var(--primary-color);
-    }
-
-    .volume-slider {
-      -webkit-appearance: none;
-      width: 100px;
-      height: 5px;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.2);
-      outline: none;
-      transition: background 0.3s ease;
-    }
-
-    .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: var(--primary-color);
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--primary-color);
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
-
-    .volume-slider::-webkit-slider-thumb:hover {
-      background: var(--secondary-color);
-      transform: scale(1.2);
-    }
-
-    .song-info {
-      text-align: center;
-      margin-top: 1rem;
-    }
-
-    .song-title {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin: 0;
-      color: var(--primary-color);
-      text-shadow: 0 0 10px var(--primary-color);
-    }
-
-    .song-artist {
-      font-size: 0.9rem;
-      margin: 0.5rem 0 0 0;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    /* 旋轉聯絡表單 */
-    .rotating-form-container {
-      perspective: 1000px;
-      margin-top: 2rem;
-    }
-
-    .rotating-form {
-      transform-style: preserve-3d;
-      animation: rotate3d 15s infinite linear;
-      padding: 2rem;
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: var(--card-radius);
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-    }
-
-    .rotating-form:hover {
-      animation-play-state: paused;
-    }
-
-    @keyframes rotate3d {
-      0% {
-        transform: rotateY(0deg);
-      }
-      100% {
-        transform: rotateY(360deg);
-      }
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--primary-color);
-    }
-
-    .form-input, .form-textarea {
-      width: 100%;
-      padding: 0.8rem;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--glass-border);
-      border-radius: 8px;
-      color: white;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .form-input:focus, .form-textarea:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-    }
-
-    .form-textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .form-submit {
-      padding: 0.8rem 1.5rem;
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-      border: none;
-      border-radius: 30px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: block;
-      width: 100%;
-    }
-
-    .form-submit:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    /* 關於我區塊樣式 */
-    .about-me-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .profile-image {
-      flex: 1;
-      min-width: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-
-    .profile-photo {
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--primary-color);
-      box-shadow: 0 0 20px var(--primary-color);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .profile-photo:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px var(--secondary-color);
-    }
-
-    .about-content {
-      flex: 2;
-      min-width: 300px;
-    }
-
-    .poetic-text {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary-color);
-    }
-
-    .poetic-text-sub {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      font-style: italic;
-      opacity: 0.8;
-    }
-
-    .animated-char {
-      display: inline-block;
-      animation: glowPulse 2s ease-in-out infinite;
-      animation-delay: calc(0.1s * var(--i));
-    }
-
-    @keyframes glowPulse {
-      0%, 100% {
-        color: var(--primary-color);
-        text-shadow: 0 0 10px var(--primary-color);
-      }
-      50% {
-        color: var(--secondary-color);
-        text-shadow: 0 0 20px var(--secondary-color);
-      }
-    }
-
-    .about-text {
-      line-height: 1.6;
-      margin-bottom: 2rem;
-    }
-
-    .about-text p {
-      margin-bottom: 1rem;
-    }
-
-    /* 響應式設計優化 */
-    @media (max-width: 768px) {
-      .video-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .service-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .certification-container {
-        flex-direction: column;
-      }
-
-      .about-me-container {
-        flex-direction: column;
-      }
-
-      .profile-image {
-        justify-content: center;
-      }
-
-      /* 優化手機版社交圖標 */
-      .social-icons {
-        gap: 1rem;
-      }
-
-      .social-icon {
-        width: 35px;
-        height: 35px;
-        margin: 0 5px;
-      }
-
-      /* 優化手機版音樂平台圖標 */
-      .music-platforms {
-        gap: 1rem;
-      }
-
-      .platform-icon {
-        width: 40px;
-        height: 40px;
-        margin: 0 8px;
-      }
-      
-      /* 調整手機版頁尾間距 */
-      .footer {
-        padding: 1.5rem 0;
-      }
-      
-      /* 調整手機版旋轉表單 */
-      .rotating-form {
-        padding: 1.5rem;
-      }
-    }
-
-    /* 更小螢幕的優化 */
-    @media (max-width: 480px) {
-      .social-icon {
-        width: 30px;
-        height: 30px;
-        margin: 0 4px;
-      }
-
-      .platform-icon {
-        width: 35px;
-        height: 35px;
-        margin: 0 6px;
-      }
-      
-      .section {
-        padding: 1rem;
-      }
-      
-      .glass {
-        padding: 1.5rem;
-      }
-    }
-
-    /* 頁尾樣式優化 */
-    .footer {
-      text-align: center;
-      padding: 2rem 0;
-      margin-top: 3rem;
-      position: relative;
-    }
-
-    .footer p {
-      margin: 0.5rem 0;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .footer a {
-      color: var(--primary-color);
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .footer a:hover {
-      color: var(--secondary-color);
-      text-shadow: 0 0 10px var(--secondary-color);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Willwi | 陳威兒 - 獨立創作歌手</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <div class="cursor"></div>
-  <div class="cursor-follower"></div>
-
-  <div id="intro">
-    <img src="images/caspar_logo.png.png" alt="Willwi Logo">
-  </div>
-
-  <div id="particles-js"></div>
-  <video id="bg-video" src="videos/background.mp4" autoplay muted loop></video>
-
-  <div id="main-content">
-    <div class="section glass fade-in-section">
-      <div class="neon-border"></div>
-      <h1 class="glow" data-text="Willwi">Willwi</h1>
-      <p class="interactive-text">音樂創作人，結合現代視覺與聽覺體驗，讓網站成為一場記憶與音符的旅程。</p>
-      
-      <!-- 音樂播放器 -->
-      <div class="music-player">
-          <div class="player-controls">
-            <div class="play-pause-btn" id="play-pause-btn">
-              <i class="fas fa-play" id="play-icon">▶</i>
-            </div>
-            <div class="volume-control">
-              <span class="volume-icon" id="volume-icon">🔊</span>
-              <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="80">
-            </div>
-          </div>
-          <div class="song-info">
-            <p class="song-title">Willwi 推薦</p>
-            <p class="song-artist">Willwi</p>
-          </div>
-      </div>
-    </div>
-    
-    <div class="section glass fade-in-section">
-      <div class="neon-border"></div>
-      <h2 class="glow" data-text="關於我">關於我</h2>
-      
-      <div class="about-me-container">
-        <div class="profile-image">
-          <img src="images/willwi-profile.jpg" alt="Willwi 音樂創作人肖像照" class="profile-photo">
+    <div class="loading-screen">
+        <div class="signature-container">
+            <img src="images/willwi_signature1.png" alt="Willwi Signature" class="signature">
         </div>
-        <div class="about-content">
-          <p class="poetic-text">
-            <span class="animated-char" style="--i:1">我</span>
-            <span class="animated-char" style="--i:2">用</span>
-            <span class="animated-char" style="--i:3">音</span>
-            <span class="animated-char" style="--i:4">樂</span>
-            <span class="animated-char" style="--i:5">記</span>
-            <span class="animated-char" style="--i:6">錄</span>
-            <span class="animated-char" style="--i:7">無</span>
-            <span class="animated-char" style="--i:8">法</span>
-            <span class="animated-char" style="--i:9">言</span>
-            <span class="animated-char" style="--i:10">說</span>
-            <span class="animated-char" style="--i:11">的</span>
-            <span class="animated-char" style="--i:12">碎</span>
-            <span class="animated-char" style="--i:13">片</span>
-          </p>
-          <p class="poetic-text-sub">這不是網站，是一次記憶的旅程。</p>
-          
-          <div class="about-text">
-            <p>大家好，我是 Willwi（陳威兒），一位來自台灣的音樂人與藝術家。我的創作核心融合了多語（中文、日文、韓文）的詩性美學，將 EDM 的節奏與 K-POP 的抒情元素巧妙結合。我的音樂探索人性、時間與孤獨等主題，希望能觸動內心深處的情感。</p>
-            
-            <p>為了提升作品的專業度與國際能見度，我參與相關認證。我很榮幸獲得 Musixmatch 國際認證，這代表我的歌詞在全球音樂平台上將更加完整、精準。此外，我的 YouTube 頻道也已獲得官方藝術家頻道（OAC）認證，這對我在影音平台上的發展是一個重要的肯定。我的作品也收錄於 Google 知識圖譜，成為 Google 認證藝術家。</p>
-            
-            <p>秉持著「音樂無界，夢想不滅」的信念。期待我的音樂能與您產生共鳴，並在您的生命中留下一些美好的印記。</p>
-          </div>
-          
-          <button class="interactive-button">探索客製化歌曲服務</button>
+        <div class="loading-progress">
+            <div class="progress-bar"></div>
         </div>
-      </div>
-    </div>
-    
-    <div class="section glass fade-in-section">
-      <div class="neon-border"></div>
-      <h2 class="glow" data-text="專業認證">專業認證</h2>
-      <div class="certification-container">
-        <div class="certification-left">
-          <img src="images/證書.jpeg" alt="Willwi 專業認證" class="certificate">
-        </div>
-        <div class="certification-right">
-          <h3>Musixmatch 專業認證</h3>
-          <div class="certification-badge">Bachelor of Lyrics（歌詞創作）</div>
-          <div class="certification-badge">Bachelor of Sync（時間軸同步）</div>
-          <div class="certification-badge">Bachelor of Translation（跨語翻譯）</div>
-          <div class="certification-badge">Bachelor of Structure（段落編排與格式）</div>
-          <p>Graduated with flying colours，成為 Musixmatch Verified Contributor。這不僅肯定了在多語詞作、時間同步與翻譯能力上的專業性，也成為 Musixmatch 社群中極少數同時擁有四大勳章的詞作者之一。</p>
-        </div>
-      </div>
     </div>
 
-    <div class="section glass fade-in-section">
-      <div class="neon-border"></div>
-      <h2 class="glow" data-text="客製化歌曲服務">客製化歌曲服務</h2>
-      <p class="interactive-text">讓您的故事、情感與回憶，化為永恆的旋律，提供專業訂製歌曲創作，為您打造獨一無二的音樂作品。</p>
-      
-      <div class="service-grid">
-        <div class="service-card">
-          <div class="service-icon">🎵</div>
-          <h3 class="service-title">Demo Song (試聽版)</h3>
-          <p class="service-price">NT$6,000 (約 USD $190)</p>
-          <ul class="service-features">
-            <li>1 分鐘內旋律 & 歌詞大綱</li>
-            <li>初步編曲（鋼琴/吉他）</li>
-            <li>1 次小調整機會</li>
-          </ul>
-          <p class="service-description">預覽概念、確定方向</p>
-        </div>
-        
-        <div class="service-card">
-          <div class="service-icon">🎼</div>
-          <h3 class="service-title">Full Song (完整版)</h3>
-          <p class="service-price">NT$20,000 (約 USD $630)</p>
-          <ul class="service-features">
-            <li>3-4 分鐘完整歌曲</li>
-            <li>客製詞曲創作</li>
-            <li>基本編曲（鋼琴或吉他+細微節奏）</li>
-            <li>1 次歌詞或旋律調整</li>
-          </ul>
-          <p class="service-description">個人專屬歌曲、贈禮、概念開發 (無商權)</p>
-        </div>
-        
-        <div class="service-card">
-          <div class="service-icon">🎧</div>
-          <h3 class="service-title">Studio Version (錄音室製作版)</h3>
-          <p class="service-price">NT$35,000 (約 USD $1,180)</p>
-          <ul class="service-features">
-            <li>高質感編曲+混音</li>
-            <li>專業錄音品質</li>
-            <li>2 次細節調整</li>
-          </ul>
-          <p class="service-description">正式發行、CC使用</p>
-        </div>
-        
-        <div class="service-card">
-          <div class="service-icon">💎</div>
-          <h3 class="service-title">Premium Production (專業製作版)</h3>
-          <p class="service-price">NT$60,000+ (約 USD $1,900+)</p>
-          <ul class="service-features">
-            <li>專業詞曲+全製作（混音/母帶）</li>
-            <li>指定曲風（K-POP、EDM、R&B 等）</li>
-            <li>專業歌手演唱 或 提供無人聲伴奏</li>
-          </ul>
-          <p class="service-description">可加購CC商權、混音與編曲、全球音樂平台發行</p>
-        </div>
-      </div>
-      
-      <div class="custom-song-service">
-        <h3>加值服務（選購）</h3>
-        <ul>
-          <li>額外修改 (每次 NT$3,000 / 約 USD $95)</li>
-          <li>指定演唱者錄製 (報價視歌手而定)</li>
-          <li>MV 視覺概念包 (NT$10,000+ / 約 USD $315+)</li>
-        </ul>
-        
-        <h3>歌曲授權與使用權說明</h3>
-        <ul>
-          <li>個人用途（非商業）限個人使用，不可商業或引用發行</li>
-          <li>商業授權 (Commercial License) ＋NT$30,000 (約 USD $630)</li>
-          <li>允許商業發行（數位平台、廣告、影片配樂等）</li>
-        </ul>
-      </div>
+    <div class="main-container">
+        <header>
+            <div class="logo-container">
+                <img src="images/willwi_signature2.png" alt="Willwi" class="logo">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home" class="active">首頁</a></li>
+                    <li><a href="#music">音樂作品</a></li>
+                    <li><a href="#videos">音樂影片</a></li>
+                    <li><a href="#custom">客製化音樂</a></li>
+                    <li><a href="#about">關於我</a></li>
+                    <li><a href="#contact">聯絡我</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section id="home" class="hero-section">
+            <div class="casper-container">
+                <img src="images/casper_logo.png" alt="Casper" id="casper-logo" class="casper-logo">
+                <div class="audio-visualizer">
+                    <canvas id="visualizer"></canvas>
+                </div>
+            </div>
+            <div class="hero-content">
+                <h1>音樂，為愛而唱。<br>這裡，沒有標籤，只有故事。</h1>
+                <p>我是 Willwi（陳威兒），一位來自台灣的獨立創作歌手，擅長融合中文、日文、韓文多語言詞曲，並將 EDM 電子樂與 K-POP 流行元素交織成詩性聲響。</p>
+                <div class="cta-buttons">
+                    <a href="#music" class="btn primary-btn">聆聽音樂</a>
+                    <a href="#custom" class="btn secondary-btn">客製化音樂</a>
+                </div>
+            </div>
+            <div class="particles-container">
+                <canvas id="particles"></canvas>
+            </div>
+        </section>
+
+        <section id="music" class="music-section">
+            <h2>音樂作品</h2>
+            <div class="music-platforms">
+                <div class="platform">
+                    <i class="fab fa-spotify"></i>
+                    <h3>Spotify</h3>
+                    <a href="https://open.spotify.com/artist/3ascZ8Rb2KDw4QyCy29Om4" target="_blank" class="platform-link">聆聽全部作品</a>
+                </div>
+                <div class="platform">
+                    <i class="fab fa-apple"></i>
+                    <h3>Apple Music</h3>
+                    <a href="https://music.apple.com/profile/willwi" target="_blank" class="platform-link">聆聽全部作品</a>
+                </div>
+                <div class="platform">
+                    <i class="fab fa-youtube"></i>
+                    <h3>YouTube Music</h3>
+                    <a href="https://music.youtube.com/channel/UCW..." target="_blank" class="platform-link">聆聽全部作品</a>
+                </div>
+            </div>
+            <div class="music-player">
+                <div class="player-container">
+                    <div class="album-art">
+                        <img src="images/willwi_portrait.png" alt="Willwi Album Art">
+                    </div>
+                    <div class="player-controls">
+                        <div class="song-info">
+                            <h3 class="song-title">最新單曲</h3>
+                            <p class="song-artist">Willwi 陳威兒</p>
+                        </div>
+                        <div class="controls">
+                            <button class="control-btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                            <button class="control-btn play-btn" id="play-btn"><i class="fas fa-play"></i></button>
+                            <button class="control-btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="time-info">
+                                <span class="current-time">0:00</span>
+                                <span class="total-time">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="videos" class="videos-section">
+            <h2>音樂影片</h2>
+            <div class="video-gallery">
+                <div class="video-container featured">
+                    <video id="featured-video" poster="images/willwi_portrait.png" controls>
+                        <source src="videos/willwi_new_song.mp4" type="video/mp4">
+                        您的瀏覽器不支援影片播放。
+                    </video>
+                    <div class="video-info">
+                        <h3>最新單曲</h3>
+                        <p>Willwi 陳威兒</p>
+                    </div>
+                </div>
+                <div class="video-grid">
+                    <div class="video-item">
+                        <video poster="images/willwi_portrait.png">
+                            <source src="videos/willwi_video1.mov" type="video/quicktime">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-info">
+                            <h4>音樂作品 1</h4>
+                        </div>
+                    </div>
+                    <div class="video-item">
+                        <video poster="images/willwi_portrait.png">
+                            <source src="videos/willwi_video2.mov" type="video/quicktime">
+                        </video>
+                        <div class="play-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-info">
+                            <h4>音樂作品 2</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="custom" class="custom-section">
+            <h2>客製化音樂創作</h2>
+            <p class="section-intro">音樂無界，夢想不滅。期待我的音樂能與您產生共鳴，並在您的生命中留下一些美好的印記。</p>
+            
+            <div class="service-cards">
+                <div class="service-card">
+                    <div class="card-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3>原創音樂</h3>
+                    <p>量身打造專屬於您的原創音樂作品，從詞曲創作到編曲製作，完整呈現您的音樂願景。</p>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <h3>歌詞創作</h3>
+                    <p>專業多語言歌詞創作，融合中、日、韓文元素，打造獨特的詩性美學。</p>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">
+                        <i class="fas fa-headphones"></i>
+                    </div>
+                    <h3>音樂製作</h3>
+                    <p>結合 EDM 電子樂與 K-POP 流行元素，為您的音樂注入現代感與獨特風格。</p>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <h3>影音創作</h3>
+                    <p>從音樂到影像的全方位創作，打造完整的視聽體驗。</p>
+                </div>
+            </div>
+            
+            <div class="cta-container">
+                <a href="#contact" class="btn primary-btn">聯絡我討論合作</a>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="images/willwi_portrait.png" alt="Willwi 陳威兒">
+                </div>
+                <div class="about-text">
+                    <h2>關於我</h2>
+                    <p>大家好，我是 Willwi（陳威兒），一位來自台灣的獨立創作歌手，擅長融合中文、日文、韓文多語言詞曲，並將 EDM 電子樂與 K-POP 流行元素交織成詩性聲響。我的音樂來自靈魂，也來自一段段不能被定義的記憶。</p>
+                    <p>我的創作風格擁有強烈個人標誌，受邀進駐 Musixmatch 國際詞庫平台，作品同步上架至 Spotify、Apple Music、YouTube Music 等串流平台，並通過 OAC 藝術家認證。</p>
+                    <p>此外，我的 YouTube 頻道也已獲得官方藝術家頻道（OAC）認證，這對我在影音平台上的發展是一個重要的肯定。我的作品也被收錄於 Google 知識圖譜，成為 Google 認證藝術家。</p>
+                    
+                    <div class="certifications">
+                        <h3>專業認證</h3>
+                        <div class="certification-badges">
+                            <div class="badge">
+                                <div class="badge-icon">
+                                    <i class="fas fa-certificate"></i>
+                                </div>
+                                <div class="badge-info">
+                                    <h4>Bachelor of Lyrics</h4>
+                                    <p>歌詞創作</p>
+                                </div>
+                            </div>
+                            <div class="badge">
+                                <div class="badge-icon">
+                                    <i class="fas fa-certificate"></i>
+                                </div>
+                                <div class="badge-info">
+                                    <h4>Bachelor of Sync</h4>
+                                    <p>時間軸同步</p>
+                                </div>
+                            </div>
+                            <div class="badge">
+                                <div class="badge-icon">
+                                    <i class="fas fa-certificate"></i>
+                                </div>
+                                <div class="badge-info">
+                                    <h4>Bachelor of Translation</h4>
+                                    <p>跨語翻譯</p>
+                                </div>
+                            </div>
+                            <div class="badge">
+                                <div class="badge-icon">
+                                    <i class="fas fa-certificate"></i>
+                                </div>
+                                <div class="badge-info">
+                                    <h4>Bachelor of Structure</h4>
+                                    <p>段落編排與格式</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="certification-note">Graduated with flying colours，成為 Musixmatch Verified Contributor。這不僅肯定了在多語詞作、時間同步與翻譯能力上的專業性，也成為 Musixmatch 社群中極少數同時擁有四大勳章的詞作者之一。</p>
+                    </div>
+                    
+                    <div class="quote">
+                        <p>"我曾經懷疑過：當所有人都有語句華麗的文案、聲線完美的聲音，那些沒有痛過、沒有流淚過、卻字句優雅的作品，要如何辨識？而那些曾經愛過、痛過、寫過、哭過的真實的聲音，是否還能被這個世界聽見，並記得？你不需要完全理解我，但如果你願意聽，那裡會有一首歌在等你。"</p>
+                        <p class="quote-author">— Willwi's Lab</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <h2>聯絡我</h2>
+            <p class="section-intro">不是為了說服誰，只是想讓那些願意瞭解的人，有地方可以開始。</p>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>商業合作：will@willwi.com</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-globe"></i>
+                        <p>官方網站：https://www.willwi.com</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/willwilab" target="_blank" class="social-link">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://instagram.com/willchen_0709" target="_blank" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://open.spotify.com/artist/3ascZ8Rb2KDw4QyCy29Om4" target="_blank" class="social-link">
+                            <i class="fab fa-spotify"></i>
+                        </a>
+                        <a href="https://music.apple.com/profile/willwi" target="_blank" class="social-link">
+                            <i class="fab fa-apple"></i>
+                        </a>
+                        <a href="https://music.youtube.com/channel/UCW..." target="_blank" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">電子郵件</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">主旨</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">訊息</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn primary-btn">送出</button>
+                </form>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/willwi_signature2.png" alt="Willwi" class="logo">
+                </div>
+                <div class="footer-text">
+                    <p>&copy; 2025 Willwi 陳威兒. All Rights Reserved.</p>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <div class="section glass fade-in-section">
-      <div class="neon-border"></div>
-      <h2 class="glow" data-text="聯絡我">聯絡我</h2>
-      <p class="interactive-text">有任何問題或合作需求，歡迎隨時與我聯繫。</p>
-      
-      <div class="rotating-form-container">
-        <div class="rotating-form">
-          <form id="contact-form">
-            <div class="form-group">
-              <label for="name" class="form-label">姓名</label>
-              <input type="text" id="name" name="name" class="form-input" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" id="email" name="email" class="form-input" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="phone" class="form-label">電話</label>
-              <input type="tel" id="phone" name="phone" class="form-input">
-            </div>
-            
-            <div class="form-group">
-              <label for="message" class="form-label">詢問內容</label>
-              <textarea id="message" name="message" class="form-textarea" required></textarea>
-            </div>
-            
-            <div class="form-group">
-              <label for="schedule" class="form-label">預定</label>
-              <input type="date" id="schedule" name="schedule" class="form-input">
-            </div>
-            
-            <button type="submit" class="form-submit">送出</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- 頁尾版權宣告 -->
-    <footer class="footer">
-      <div class="social-icons">
-        <a href="https://www.facebook.com/Willwichen" target="_blank" class="social-icon">
-          <img src="images/facebook.png" alt="Facebook">
-        </a>
-        <a href="https://www.instagram.com/willchen_0709" target="_blank" class="social-icon">
-          <img src="images/instagram.png" alt="Instagram">
-        </a>
-        <a href="https://twitter.com/wei84990" target="_blank" class="social-icon">
-          <img src="images/twitter.png" alt="Twitter">
-        </a>
-        <a href="https://www.youtube.com/@WillChen88" target="_blank" class="social-icon">
-          <img src="images/youtube-music-logo.png" alt="YouTube">
-        </a>
-        <a href="https://www.facebook.com/ChenWillwi" target="_blank" class="social-icon">
-          <img src="images/facebook.png" alt="Facebook Fan Page">
-        </a>
-      </div>
-      
-      <div class="music-platforms">
-        <a href="https://open.spotify.com/artist/willwi" target="_blank">
-          <img src="images/spotify-logo.png" alt="Spotify" class="platform-icon">
-        </a>
-        <a href="https://music.apple.com/artist/willwi" target="_blank">
-          <img src="images/apple-music-logo.png" alt="Apple Music" class="platform-icon">
-        </a>
-        <a href="https://www.youtube.com/music/willwi" target="_blank">
-          <img src="images/youtube-music-logo.png" alt="YouTube Music" class="platform-icon">
-        </a>
-      </div>
-      
-      <p>© 2025 陳威兒 版權所有</p>
-      <p>聯絡信箱：<a href="mailto:will@willwi.com">will@willwi.com</a></p>
-      <p>官方網站：<a href="https://www.willwi.com" target="_blank">www.willwi.com</a></p>
-    </footer>
-  </div>
-
-  <audio id="bg-music" src="audio/placeholder.mp3" loop></audio>
-
-  <script>
-    // 自定義游標
-    const cursor = document.querySelector('.cursor');
-    const cursorFollower = document.querySelector('.cursor-follower');
+    <audio id="bg-music" src="videos/willwi_new_song.mp4"></audio>
     
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-      
-      setTimeout(() => {
-        cursorFollower.style.left = e.clientX + 'px';
-        cursorFollower.style.top = e.clientY + 'px';
-      }, 100);
-    });
-    
-    document.addEventListener('mousedown', () => {
-      cursor.style.width = '15px';
-      cursor.style.height = '15px';
-      cursorFollower.style.width = '30px';
-      cursorFollower.style.height = '30px';
-    });
-    
-    document.addEventListener('mouseup', () => {
-      cursor.style.width = '20px';
-      cursor.style.height = '20px';
-      cursorFollower.style.width = '40px';
-      cursorFollower.style.height = '40px';
-    });
-    
-    // 互動元素游標效果
-    const interactiveElements = document.querySelectorAll('a, button, input, .interactive-button, .play-pause-btn, .video-card');
-    
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.style.width = '30px';
-        cursor.style.height = '30px';
-        cursor.style.backgroundColor = 'rgba(255, 0, 255, 0.5)';
-        cursorFollower.style.width = '50px';
-        cursorFollower.style.height = '50px';
-        cursorFollower.style.borderColor = 'rgba(255, 0, 255, 0.3)';
-      });
-      
-      el.addEventListener('mouseleave', () => {
-        cursor.style.width = '20px';
-        cursor.style.height = '20px';
-        cursor.style.backgroundColor = 'rgba(0, 255, 255, 0.5)';
-        cursorFollower.style.width = '40px';
-        cursorFollower.style.height = '40px';
-        cursorFollower.style.borderColor = 'rgba(0, 255, 255, 0.3)';
-      });
-    });
-    
-    // 載入動畫
-    const intro = document.getElementById('intro');
-    const mainContent = document.getElementById('main-content');
-    const bgVideo = document.getElementById('bg-video');
-    
-    intro.addEventListener('click', () => {
-      intro.style.opacity = '0';
-      setTimeout(() => {
-        intro.style.display = 'none';
-        mainContent.style.opacity = '1';
-        mainContent.style.transform = 'translateY(0)';
-        bgVideo.style.opacity = '0.2';
-        
-        // 啟動音樂
-        const bgMusic = document.getElementById('bg-music');
-        bgMusic.volume = 0.5;
-        // 注意：大多數瀏覽器會阻止自動播放，需要用戶互動
-        // bgMusic.play();
-      }, 1000);
-    });
-    
-    // 滾動觸發動畫
-    const fadeElements = document.querySelectorAll('.fade-in-section');
-    
-    function checkFade() {
-      fadeElements.forEach(element => {
-        const elementTop = element.getBoundingClientRect().top;
-        const elementBottom = element.getBoundingClientRect().bottom;
-        
-        if (elementTop < window.innerHeight - 100 && elementBottom > 0) {
-          element.classList.add('is-visible');
-        }
-      });
-    }
-    
-    window.addEventListener('scroll', checkFade);
-    window.addEventListener('resize', checkFade);
-    window.addEventListener('load', () => {
-      setTimeout(checkFade, 2000); // 初始檢查
-    });
-    
-    // 視差效果
-    const parallaxLayers = document.querySelectorAll('.parallax-layer');
-    
-    window.addEventListener('mousemove', (e) => {
-      const x = e.clientX / window.innerWidth;
-      const y = e.clientY / window.innerHeight;
-      
-      parallaxLayers.forEach((layer, index) => {
-        const speed = (index + 1) * 20;
-        const offsetX = (0.5 - x) * speed;
-        const offsetY = (0.5 - y) * speed;
-        
-        layer.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-      });
-    });
-    
-    // 音樂播放器功能
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const playIcon = document.getElementById('play-icon');
-    const volumeSlider = document.getElementById('volume-slider');
-    const volumeIcon = document.getElementById('volume-icon');
-    const bgMusic = document.getElementById('bg-music');
-    
-    playPauseBtn.addEventListener('click', () => {
-      if (bgMusic.paused) {
-        bgMusic.play();
-        playIcon.textContent = '⏸';
-      } else {
-        bgMusic.pause();
-        playIcon.textContent = '▶';
-      }
-    });
-    
-    volumeSlider.addEventListener('input', () => {
-      const volume = volumeSlider.value / 100;
-      bgMusic.volume = volume;
-      
-      if (volume === 0) {
-        volumeIcon.textContent = '🔇';
-      } else if (volume < 0.5) {
-        volumeIcon.textContent = '🔉';
-      } else {
-        volumeIcon.textContent = '🔊';
-      }
-    });
-    
-    volumeIcon.addEventListener('click', () => {
-      if (bgMusic.muted) {
-        bgMusic.muted = false;
-        volumeIcon.textContent = '🔊';
-      } else {
-        bgMusic.muted = true;
-        volumeIcon.textContent = '🔇';
-      }
-    });
-    
-    // 聯絡表單提交
-    const contactForm = document.getElementById('contact-form');
-    
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      // 這裡可以添加表單提交邏輯，例如 AJAX 請求或其他處理
-      alert('感謝您的訊息！我們會盡快回覆您。');
-      contactForm.reset();
-    });
-    
-    // 動態生成影片卡片
-    function createVideoCards() {
-      const videoGrid = document.querySelector('.video-grid');
-      
-      if (!videoGrid) return;
-      
-      const videos = [
-        {
-          title: '歲月線 - Willwi 原創歌曲',
-          thumbnail: 'images/video-thumbnail-1.jpg',
-          url: 'https://www.youtube.com/watch?v=example1'
-        },
-        {
-          title: '存在する意味 - Willwi 日語原創',
-          thumbnail: 'images/video-thumbnail-2.jpg',
-          url: 'https://www.youtube.com/watch?v=example2'
-        },
-        {
-          title: '來不及的話 - Willwi 原創歌曲',
-          thumbnail: 'images/video-thumbnail-3.jpg',
-          url: 'https://www.youtube.com/watch?v=example3'
-        }
-      ];
-      
-      videos.forEach(video => {
-        const card = document.createElement('div');
-        card.className = 'video-card';
-        
-        card.innerHTML = `
-          <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
-          <div class="play-button"></div>
-          <div class="video-info">
-            <h3 class="video-title">${video.title}</h3>
-          </div>
-        `;
-        
-        card.addEventListener('click', () => {
-          window.open(video.url, '_blank');
-        });
-        
-        videoGrid.appendChild(card);
-      });
-    }
-    
-    // 初始化
-    window.addEventListener('load', () => {
-      // 創建粒子效果
-      if (typeof particlesJS !== 'undefined') {
-        particlesJS('particles-js', {
-          particles: {
-            number: { value: 80, density: { enable: true, value_area: 800 } },
-            color: { value: '#0ff' },
-            shape: { type: 'circle' },
-            opacity: { value: 0.5, random: true },
-            size: { value: 3, random: true },
-            line_linked: {
-              enable: true,
-              distance: 150,
-              color: '#0ff',
-              opacity: 0.4,
-              width: 1
-            },
-            move: {
-              enable: true,
-              speed: 2,
-              direction: 'none',
-              random: true,
-              straight: false,
-              out_mode: 'out',
-              bounce: false
-            }
-          },
-          interactivity: {
-            detect_on: 'canvas',
-            events: {
-              onhover: { enable: true, mode: 'grab' },
-              onclick: { enable: true, mode: 'push' },
-              resize: true
-            },
-            modes: {
-              grab: { distance: 140, line_linked: { opacity: 1 } },
-              push: { particles_nb: 4 }
-            }
-          },
-          retina_detect: true
-        });
-      }
-      
-      // 創建視頻卡片
-      createVideoCards();
-    });
-  </script>
+    <script src="js/script.js"></script>
 </body>
 </html>
