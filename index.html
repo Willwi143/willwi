@@ -3,1394 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Willwi | 陳威兒 - 賽博音樂創作者</title>
-    <meta name="description" content="Willwi 陳威兒 - 融合EDM、K-POP與全球音樂風格的賽博音樂創作者。最新單曲《靜默退場》現已發布。">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --neon-cyan: #00ffff;
-            --neon-pink: #ff00ff;
-            --neon-yellow: #ffff00;
-            --neon-green: #00ff00;
-            --neon-purple: #8a2be2;
-            --dark-bg: #0a0a0a;
-            --darker-bg: #050505;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(0, 255, 255, 0.2);
-            --text-primary: #ffffff;
-            --text-secondary: #cccccc;
-            --grid-color: rgba(0, 255, 255, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Rajdhani', 'Noto Sans TC', sans-serif;
-            background: var(--dark-bg);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            cursor: none;
-            line-height: 1.6;
-        }
-
-        /* 自定義游標 */
-        .cursor {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--neon-cyan);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            transition: all 0.1s ease;
-            transform: translate(-50%, -50%);
-        }
-
-        .cursor-trail {
-            position: fixed;
-            width: 4px;
-            height: 4px;
-            background: var(--neon-cyan);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9998;
-            opacity: 0.7;
-            transition: all 0.3s ease;
-        }
-
-        /* 矩陣雨背景 */
-        .matrix-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            overflow: hidden;
-        }
-
-        .matrix-column {
-            position: absolute;
-            top: -100%;
-            font-family: 'Orbitron', monospace;
-            font-size: 14px;
-            color: var(--neon-green);
-            text-shadow: 0 0 5px var(--neon-green);
-            animation: matrix-fall linear infinite;
-            opacity: 0.3;
-        }
-
-        @keyframes matrix-fall {
-            to {
-                transform: translateY(100vh);
-            }
-        }
-
-        /* 網格背景 */
-        .grid-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: grid-move 20s linear infinite;
-        }
-
-        @keyframes grid-move {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        /* 粒子系統 */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--neon-cyan);
-            border-radius: 50%;
-            animation: particle-float 6s linear infinite;
-            box-shadow: 0 0 6px var(--neon-cyan);
-        }
-
-        @keyframes particle-float {
-            0% {
-                transform: translateY(100vh) translateX(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) translateX(100px);
-                opacity: 0;
-            }
-        }
-
-        /* 載入畫面 */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--darker-bg);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 1s ease-out;
-        }
-
-        .loading-logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            font-weight: 900;
-            color: var(--neon-cyan);
-            text-shadow: 
-                0 0 10px var(--neon-cyan),
-                0 0 20px var(--neon-cyan),
-                0 0 40px var(--neon-cyan);
-            animation: logo-pulse 2s ease-in-out infinite;
-            margin-bottom: 2rem;
-        }
-
-        @keyframes logo-pulse {
-            0%, 100% {
-                transform: scale(1);
-                text-shadow: 
-                    0 0 10px var(--neon-cyan),
-                    0 0 20px var(--neon-cyan),
-                    0 0 40px var(--neon-cyan);
-            }
-            50% {
-                transform: scale(1.05);
-                text-shadow: 
-                    0 0 20px var(--neon-cyan),
-                    0 0 30px var(--neon-cyan),
-                    0 0 50px var(--neon-cyan),
-                    0 0 70px var(--neon-cyan);
-            }
-        }
-
-        .loading-bar {
-            width: 300px;
-            height: 4px;
-            background: rgba(0, 255, 255, 0.2);
-            border-radius: 2px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .loading-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
-            border-radius: 2px;
-            animation: loading-fill 3s ease-out forwards;
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        @keyframes loading-fill {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        /* 音樂播放器 */
-        .music-player {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 200;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 1rem;
-            min-width: 300px;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-        }
-
-        .player-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .album-art {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            animation: rotate 10s linear infinite;
-        }
-
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
-        }
-
-        .song-details h3 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--neon-cyan);
-            font-size: 1rem;
-            margin-bottom: 0.2rem;
-        }
-
-        .song-details p {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-
-        .player-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .control-btn {
-            background: none;
-            border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-
-        .control-btn:hover {
-            background: var(--neon-cyan);
-            color: var(--dark-bg);
-            box-shadow: 0 0 15px var(--neon-cyan);
-        }
-
-        .play-btn {
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-        }
-
-        .progress-container {
-            margin-bottom: 1rem;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
-            width: 0%;
-            transition: width 0.1s ease;
-            box-shadow: 0 0 5px var(--neon-cyan);
-        }
-
-        .time-display {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-
-        .volume-container {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .volume-slider {
-            flex: 1;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        /* 主要內容 */
-        .main-content {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease-out;
-        }
-
-        .main-content.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* 導航欄 */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px var(--neon-cyan);
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.5rem 1rem;
-        }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--neon-cyan);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-            box-shadow: 0 0 5px var(--neon-cyan);
-        }
-
-        .nav-link:hover {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 5px var(--neon-cyan);
-        }
-
-        .nav-link:hover::before {
-            width: 100%;
-        }
-
-        /* 英雄區塊 */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            padding: 0 2rem;
-        }
-
-        .hero-profile {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin-bottom: 2rem;
-            border: 3px solid var(--neon-cyan);
-            box-shadow: 
-                0 0 20px var(--neon-cyan),
-                inset 0 0 20px rgba(0, 255, 255, 0.2);
-            animation: profile-glow 3s ease-in-out infinite;
-            object-fit: cover;
-        }
-
-        @keyframes profile-glow {
-            0%, 100% {
-                box-shadow: 
-                    0 0 20px var(--neon-cyan),
-                    inset 0 0 20px rgba(0, 255, 255, 0.2);
-            }
-            50% {
-                box-shadow: 
-                    0 0 40px var(--neon-cyan),
-                    0 0 60px var(--neon-cyan),
-                    inset 0 0 30px rgba(0, 255, 255, 0.4);
-            }
-        }
-
-        .hero-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(3rem, 8vw, 8rem);
-            font-weight: 900;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-yellow));
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 3s ease-in-out infinite;
-            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-        }
-
-        @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.2rem, 3vw, 2rem);
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            font-weight: 300;
-        }
-
-        .hero-new-song {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(1rem, 2.5vw, 1.5rem);
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-            margin-bottom: 2rem;
-            animation: new-song-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes new-song-pulse {
-            0%, 100% {
-                text-shadow: 0 0 10px var(--neon-pink);
-            }
-            50% {
-                text-shadow: 
-                    0 0 20px var(--neon-pink),
-                    0 0 30px var(--neon-pink);
-            }
-        }
-
-        .typewriter {
-            font-family: 'Orbitron', monospace;
-            font-size: clamp(1rem, 2.5vw, 1.5rem);
-            color: var(--neon-green);
-            text-shadow: 0 0 10px var(--neon-green);
-            border-right: 2px solid var(--neon-green);
-            white-space: nowrap;
-            overflow: hidden;
-            animation: typing 4s steps(40) infinite, blink 1s infinite;
-            margin-bottom: 3rem;
-        }
-
-        @keyframes typing {
-            0%, 90%, 100% { width: 0; }
-            30%, 60% { width: 100%; }
-        }
-
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
-
-        /* 音樂卡片區塊 */
-        .music-section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 20px var(--neon-cyan);
-        }
-
-        .music-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .music-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.5s ease;
-            transform-style: preserve-3d;
-        }
-
-        .music-card.featured {
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
-        }
-
-        .music-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(
-                from 0deg,
-                transparent,
-                var(--neon-cyan),
-                transparent,
-                var(--neon-pink),
-                transparent
-            );
-            animation: rotate 4s linear infinite;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .music-card:hover::before {
-            opacity: 0.1;
-        }
-
-        .music-card:hover {
-            transform: translateY(-10px) rotateX(5deg);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.3),
-                0 0 30px rgba(0, 255, 255, 0.2);
-            border-color: var(--neon-cyan);
-        }
-
-        .card-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .card-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--neon-cyan);
-            margin-bottom: 1rem;
-            text-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        .card-title.featured {
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-        }
-
-        .card-description {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        .card-button {
-            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 25px;
-            color: var(--dark-bg);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .card-button.featured {
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
-        }
-
-        .card-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .card-button:hover::before {
-            left: 100%;
-        }
-
-        .card-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.3);
-        }
-
-        /* 關於我區塊 */
-        .about-section {
-            padding: 5rem 2rem;
-            background: linear-gradient(135deg, rgba(0,255,255,0.05), rgba(255,0,255,0.05));
-            position: relative;
-        }
-
-        .about-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .about-text {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .language-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .lang-tab {
-            padding: 0.5rem 1.5rem;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .lang-tab.active {
-            background: var(--neon-cyan);
-            color: var(--dark-bg);
-            box-shadow: 0 0 20px var(--neon-cyan);
-        }
-
-        .lang-content {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .lang-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 證書展示 */
-        .certificate-section {
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-
-        .certificate-img {
-            max-width: 600px;
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-            border: 2px solid var(--neon-yellow);
-        }
-
-        .certificate-img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 50px rgba(255, 255, 0, 0.3);
-        }
-
-        /* 音頻視覺化 */
-        .audio-visualizer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            z-index: 50;
-            display: flex;
-            align-items: end;
-            justify-content: center;
-            gap: 2px;
-            padding: 0 2rem;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        }
-
-        .visualizer-bar {
-            width: 4px;
-            background: linear-gradient(to top, var(--neon-cyan), var(--neon-pink));
-            border-radius: 2px;
-            animation: visualizer-dance 0.5s ease-in-out infinite alternate;
-            box-shadow: 0 0 5px var(--neon-cyan);
-        }
-
-        @keyframes visualizer-dance {
-            0% { height: 10px; }
-            100% { height: 60px; }
-        }
-
-        /* 社群媒體區塊 */
-        .social-section {
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-
-        .social-grid {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-
-        .social-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-            padding: 1rem;
-            border-radius: 15px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            min-width: 120px;
-        }
-
-        .social-link:hover {
-            transform: translateY(-5px);
-            color: var(--neon-cyan);
-            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.3);
-        }
-
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
-        }
-
-        /* 響應式設計 */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero-title {
-                font-size: 3rem;
-            }
-            
-            .music-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .language-tabs {
-                flex-wrap: wrap;
-            }
-
-            .music-player {
-                position: relative;
-                top: auto;
-                right: auto;
-                margin: 2rem auto;
-                max-width: 90%;
-            }
-        }
-
-        /* 滾動條樣式 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--darker-bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--neon-cyan);
-            border-radius: 4px;
-            box-shadow: 0 0 5px var(--neon-cyan);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--neon-pink);
-            box-shadow: 0 0 10px var(--neon-pink);
-        }
-
-        /* 隱藏類別 */
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-    </style>
+    <title>WILLWI | 賽博音樂創作者</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- 自定義游標 -->
-    <div class="cursor"></div>
-    <div class="cursor-trail"></div>
-
-    <!-- 矩陣雨背景 -->
-    <div class="matrix-bg" id="matrixBg"></div>
-
-    <!-- 網格背景 -->
-    <div class="grid-bg"></div>
-
-    <!-- 粒子系統 -->
-    <div class="particles" id="particles"></div>
-
-    <!-- 載入畫面 -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-logo">WILLWI</div>
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
-        </div>
+    <!-- 背景動畫 -->
+    <div class="cyber-background">
+        <div class="grid-overlay"></div>
+        <div class="floating-particles"></div>
     </div>
 
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">WILLWI</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link active" data-lang="zh">首頁</a>
+                <a href="#music" class="nav-link" data-lang="zh">音樂作品</a>
+                <a href="#about" class="nav-link" data-lang="zh">關於我</a>
+            </div>
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="zh">中文</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="ja">日本語</button>
+            </div>
+        </div>
+    </nav>
+
     <!-- 音樂播放器 -->
-    <div class="music-player" id="musicPlayer">
-        <div class="player-info">
-            <div class="album-art">♪</div>
-            <div class="song-details">
-                <h3 id="currentSong">靜默退場</h3>
-                <p id="currentArtist">Willwi</p>
+    <div class="music-player">
+        <div class="player-container">
+            <div class="player-info">
+                <div class="album-art">
+                    <img src="images/avatar.jpg" alt="Willwi" id="albumArt">
+                </div>
+                <div class="track-info">
+                    <div class="track-title" id="trackTitle">靜默退場</div>
+                    <div class="artist-name">Willwi</div>
+                </div>
             </div>
-        </div>
-        <div class="player-controls">
-            <button class="control-btn" id="prevBtn">⏮</button>
-            <button class="control-btn play-btn" id="playBtn">▶</button>
-            <button class="control-btn" id="nextBtn">⏭</button>
-        </div>
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar">
-                <div class="progress" id="progress"></div>
+            <div class="player-controls">
+                <button class="control-btn" id="prevBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 20L9 12L19 4V20Z" fill="currentColor"/>
+                        <path d="M5 19V5" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <button class="control-btn play-btn" id="playBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" id="playIcon">
+                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                    </svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" id="pauseIcon" style="display: none;">
+                        <path d="M6 4H10V20H6V4Z" fill="currentColor"/>
+                        <path d="M14 4H18V20H14V4Z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="control-btn" id="nextBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 4L15 12L5 20V4Z" fill="currentColor"/>
+                        <path d="M19 5V19" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
             </div>
-            <div class="time-display">
-                <span id="currentTime">0:00</span>
-                <span id="duration">0:00</span>
+            <div class="player-progress">
+                <div class="time-display">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime">0:00</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                        <div class="progress-handle" id="progressHandle"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="volume-container">
-            <span>🔊</span>
-            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+            <div class="volume-control">
+                <button class="volume-btn" id="volumeBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="currentColor"/>
+                        <path d="M19.07 4.93C20.9 6.76 20.9 9.24 19.07 11.07" stroke="currentColor" stroke-width="2"/>
+                        <path d="M15.54 8.46C16.4 9.32 16.4 10.68 15.54 11.54" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <div class="volume-slider">
+                    <div class="volume-track">
+                        <div class="volume-fill" id="volumeFill"></div>
+                        <div class="volume-handle" id="volumeHandle"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- 主要內容 -->
-    <div class="main-content" id="mainContent">
-        <!-- 導航欄 -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <a href="#" class="logo">WILLWI</a>
-                <ul class="nav-links">
-                    <li><a href="#home" class="nav-link">首頁</a></li>
-                    <li><a href="#music" class="nav-link">音樂作品</a></li>
-                    <li><a href="#about" class="nav-link">關於我</a></li>
-                    <li><a href="#contact" class="nav-link">聯絡我</a></li>
-                </ul>
+    <main class="main-content">
+        <!-- 首頁區塊 -->
+        <section id="home" class="hero-section">
+            <div class="hero-container">
+                <div class="profile-section">
+                    <div class="profile-image">
+                        <div class="profile-ring">
+                            <img src="images/avatar.jpg" alt="Willwi Profile" class="profile-avatar">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="title-main">WILLWI</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        <span data-lang="zh">賽博音樂創作者 | Cyber Music Creator</span>
+                        <span data-lang="en" style="display: none;">Cyber Music Creator</span>
+                        <span data-lang="ja" style="display: none;">サイバー音楽クリエイター</span>
+                    </p>
+                    
+                    <div class="latest-release">
+                        <div class="release-icon">🎵</div>
+                        <span data-lang="zh">最新單曲《靜默退場》現已發布</span>
+                        <span data-lang="en" style="display: none;">Latest Single "Silent Exit" Now Available</span>
+                        <span data-lang="ja" style="display: none;">最新シングル「静寂退場」配信中</span>
+                    </div>
+                    
+                    <div class="hero-quote">
+                        <p data-lang="zh">音樂に境界はなく、夢は決して死なない...</p>
+                        <p data-lang="en" style="display: none;">Music has no boundaries, dreams never die...</p>
+                        <p data-lang="ja" style="display: none;">音楽に境界はなく、夢は決して死なない...</p>
+                    </div>
+                </div>
             </div>
-        </nav>
-
-        <!-- 英雄區塊 -->
-        <section class="hero" id="home">
-            <img src="willwi-profile.jpg" alt="Willwi Profile" class="hero-profile">
-            <h1 class="hero-title">WILLWI</h1>
-            <p class="hero-subtitle">賽博音樂創作者 | Cyber Music Creator</p>
-            <p class="hero-new-song">🎵 最新單曲《靜默退場》現已發布</p>
-            <div class="typewriter" id="typewriter">音樂無界，夢想不滅...</div>
-        </section>
-
-        <!-- 音樂作品區塊 -->
-        <section class="music-section" id="music">
-            <h2 class="section-title">音樂作品 | MUSIC WORKS</h2>
-            <div class="music-grid">
-                <div class="music-card featured">
-                    <div class="card-content">
-                        <h3 class="card-title featured">🎵 靜默退場 | Silent Exit</h3>
-                        <p class="card-description">
-                            最新單曲《靜默退場》現已發布！這首歌探討了在喧囂世界中尋找內心平靜的主題，
-                            融合了電子音樂與詩性歌詞，帶來深刻的聽覺體驗。
-                        </p>
-                        <a href="https://open.spotify.com/artist/3ascZ8Rb2KDw4QyCy29Om4" target="_blank" class="card-button featured">
-                            在 Spotify 聆聽
-                        </a>
-                    </div>
-                </div>
-
-                <div class="music-card">
-                    <div class="card-content">
-                        <h3 class="card-title">EDM 系列 | EDM Collection</h3>
-                        <p class="card-description">
-                            電子舞曲系列作品，融合現代電子音樂與傳統元素，
-                            創造出獨特的聽覺體驗，讓每個節拍都充滿能量。
-                        </p>
-                        <a href="https://music.apple.com/profile/Willwi" target="_blank" class="card-button">
-                            在 Apple Music 聆聽
-                        </a>
-                    </div>
-                </div>
-
-                <div class="music-card">
-                    <div class="card-content">
-                        <h3 class="card-title">K-POP 風格 | K-POP Style</h3>
-                        <p class="card-description">
-                            結合韓流音樂元素與個人創作風格，
-                            打造出既熟悉又新穎的音樂作品，展現多元文化的音樂魅力。
-                        </p>
-                        <a href="https://music.youtube.com/channel/UC3Jj31PziWsxhgiHyDGlpAg" target="_blank" class="card-button">
-                            在 YouTube Music 聆聽
-                        </a>
-                    </div>
-                </div>
-
-                <div class="music-card">
-                    <div class="card-content">
-                        <h3 class="card-title">客製化音樂 | Custom Music</h3>
-                        <p class="card-description">
-                            提供專業的客製化音樂創作服務，
-                            將您的故事轉化為獨特的音樂作品，讓音樂成為您情感的載體。
-                        </p>
-                        <a href="mailto:will@willwi.com" class="card-button">
-                            聯絡合作
-                        </a>
-                    </div>
-                </div>
+            
+            <!-- 音頻波形視覺化 -->
+            <div class="audio-visualizer">
+                <div class="visualizer-bars"></div>
             </div>
         </section>
 
         <!-- 關於我區塊 -->
-        <section class="about-section" id="about">
-            <div class="about-container">
-                <h2 class="section-title">關於我 | ABOUT ME</h2>
+        <section id="about" class="about-section">
+            <div class="section-container">
+                <h2 class="section-title">
+                    <span data-lang="zh">關於我 | ABOUT ME</span>
+                    <span data-lang="en" style="display: none;">ABOUT ME</span>
+                    <span data-lang="ja" style="display: none;">私について</span>
+                </h2>
                 
-                <div class="language-tabs">
-                    <div class="lang-tab active" onclick="switchLanguage('zh')">中文</div>
-                    <div class="lang-tab" onclick="switchLanguage('en')">English</div>
-                    <div class="lang-tab" onclick="switchLanguage('ja')">日本語</div>
-                </div>
-
-                <div class="lang-content active" id="zh-content">
-                    <p class="about-text">
-                        大家好，我是 Willwi（陳威兒）—— 一位來自台灣的獨立創作歌手，擅長融合中文、日文、韓文多語言詞曲，並將 EDM 電子樂與 K-POP 流行元素交織成詩性聲響。我的音樂來自靈魂，也來自一段段不能被定義的記憶。
-                    </p>
-                    <p class="about-text">
-                        我的創作風格擁有強烈個人標誌，受邀進駐 Musixmatch 國際詞庫平台，作品同步上架至 Spotify、Apple Music、YouTube Music 等串流平台，並通過 OAC 藝術家認證。
-                    </p>
-                    <p class="about-text">
-                        秉持著「音樂無界，夢想不滅」的信念，期待我的音樂能與您產生共鳴，並在您的生命中留下一些美好的印記。
-                    </p>
-                </div>
-
-                <div class="lang-content" id="en-content">
-                    <p class="about-text">
-                        Hello, I'm Willwi. Music is my passion and solace. Blending EDM, K-POP, and global styles, I create resonant pieces. My latest single reflects my journey of self-discovery, hoping to touch your hearts.
-                    </p>
-                    <p class="about-text">
-                        Thanks to all my listeners for your support as we continue this musical journey together. Every note I create comes from a place of authenticity and emotional depth, aiming to connect with souls across different cultures and backgrounds.
-                    </p>
-                </div>
-
-                <div class="lang-content" id="ja-content">
-                    <p class="about-text">
-                        こんにちは、私はWillwiです。音楽は私の情熱であり慰めです。EDM、K-POP、世界各地の音楽スタイルを融合させ、共感を呼ぶ作品を創造しています。
-                    </p>
-                    <p class="about-text">
-                        最新のシングルは、自己発見の旅を反映しており、皆さんの心に触れることを願っています。サポートしてくれるすべてのリスナーに感謝します。一緒に音樂の旅を続けましょう。
-                    </p>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p data-lang="zh">
+                            大家好，我是 Willwi（陳威兒）——一位來自台灣的獨立創作歌手，擅長融合中文、日文、韓文多語言音樂，並將 EDM 電子樂與 K-POP 流行元素交織成獨特聲響。我的音樂來自靈魂，也來自一段段不能被定義的記憶。
+                        </p>
+                        <p data-lang="en" style="display: none;">
+                            Hello, I'm Willwi (Chen Wei-Er) — an independent singer-songwriter from Taiwan, specializing in multilingual music that blends Chinese, Japanese, and Korean, weaving together EDM electronic music and K-POP elements into a unique sound. My music comes from the soul and from memories that cannot be defined.
+                        </p>
+                        <p data-lang="ja" style="display: none;">
+                            こんにちは、私はWillwi（陳威兒）です。台湾出身の独立系シンガーソングライターで、中国語、日本語、韓国語を融合した多言語音楽を得意とし、EDMエレクトロニック音楽とK-POPポップ要素を織り交ぜた独特なサウンドを創造しています。私の音楽は魂から生まれ、定義できない記憶の断片から生まれています。
+                        </p>
+                        
+                        <p data-lang="zh">
+                            我的創作風格擁有強烈個人標籤，受邀進駐 Musixmatch 國際詞庫平台，作品同步上架至 Spotify、Apple Music、YouTube Music 等串流平台，並通過 OAC 藝術家認證。
+                        </p>
+                        <p data-lang="en" style="display: none;">
+                            My creative style has a strong personal signature. I've been invited to join the Musixmatch international lyrics platform, with works simultaneously released on streaming platforms like Spotify, Apple Music, and YouTube Music, and certified through OAC artist verification.
+                        </p>
+                        <p data-lang="ja" style="display: none;">
+                            私の創作スタイルは強い個人的な特徴を持っており、Musixmatch国際歌詞プラットフォームに招待され、作品はSpotify、Apple Music、YouTube Musicなどのストリーミングプラットフォームに同時リリースされ、OACアーティスト認証を取得しています。
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 證書展示區塊 -->
-        <section class="certificate-section">
-            <h2 class="section-title">專業認證 | CERTIFICATIONS</h2>
-            <img src="證書.jpeg" alt="Musixmatch Academy Certificate" class="certificate-img">
-            <p class="about-text" style="margin-top: 2rem;">
-                Musixmatch Academy 四項專業認證徽章：歌詞創作、時間軸同步、跨語翻譯、段落編排與格式
-            </p>
-        </section>
+        <!-- 音樂作品區塊 -->
+        <section id="music" class="music-section">
+            <div class="section-container">
+                <h2 class="section-title">
+                    <span data-lang="zh">音樂作品</span>
+                    <span data-lang="en" style="display: none;">MUSIC WORKS</span>
+                    <span data-lang="ja" style="display: none;">音楽作品</span>
+                </h2>
+                
+                <div class="music-grid">
+                    <div class="music-card" data-track="0">
+                        <div class="card-image">
+                            <img src="images/track1.jpg" alt="靜默退場">
+                            <div class="play-overlay">
+                                <button class="card-play-btn">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">靜默退場</h3>
+                            <p class="card-subtitle">Silent Exit</p>
+                            <div class="card-links">
+                                <a href="#" class="platform-link spotify">Spotify</a>
+                                <a href="#" class="platform-link youtube">YouTube</a>
+                                <a href="#" class="platform-link apple">Apple Music</a>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- 社群媒體區塊 -->
-        <section class="social-section" id="contact">
-            <h2 class="section-title">聯絡我 | CONNECT</h2>
-            <div class="social-grid">
-                <a href="https://willwi.com" target="_blank" class="social-link">
-                    <div class="social-icon" style="background: linear-gradient(45deg, #00ffff, #ff00ff); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">W</div>
-                    <span>官方網站</span>
-                </a>
-                <a href="https://open.spotify.com/artist/3ascZ8Rb2KDw4QyCy29Om4" target="_blank" class="social-link">
-                    <div class="social-icon" style="background: #1DB954; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">♪</div>
-                    <span>Spotify</span>
-                </a>
-                <a href="https://music.apple.com/profile/Willwi" target="_blank" class="social-link">
-                    <div class="social-icon" style="background: #FA243C; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">🍎</div>
-                    <span>Apple Music</span>
-                </a>
-                <a href="https://music.youtube.com/channel/UC3Jj31PziWsxhgiHyDGlpAg" target="_blank" class="social-link">
-                    <div class="social-icon" style="background: #FF0000; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">▶</div>
-                    <span>YouTube Music</span>
-                </a>
-                <a href="https://instagram.com/willchen_0709" target="_blank" class="social-link">
-                    <div class="social-icon" style="background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">📷</div>
-                    <span>Instagram</span>
-                </a>
-                <a href="https://facebook.com/WillwiChen" target="_blank" class="social-link">
-                    <div class="social-icon" style="background: #1877F2; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">f</div>
-                    <span>Facebook</span>
-                </a>
-                <a href="https://x.com/wei84990" target="_blank" class="social-link">
-                    <div class="social-icon" style="background: #000000; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">𝕏</div>
-                    <span>X (Twitter)</span>
-                </a>
-                <a href="https://threads.net/@willwichen" target="_blank" class="social-link">
-                    <div class="social-icon" style="background: #000000; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">@</div>
-                    <span>Threads</span>
-                </a>
+                    <div class="music-card" data-track="1">
+                        <div class="card-image">
+                            <img src="images/track2.jpg" alt="時間線">
+                            <div class="play-overlay">
+                                <button class="card-play-btn">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">時間線</h3>
+                            <p class="card-subtitle">Timeline</p>
+                            <div class="card-links">
+                                <a href="#" class="platform-link spotify">Spotify</a>
+                                <a href="#" class="platform-link youtube">YouTube</a>
+                                <a href="#" class="platform-link apple">Apple Music</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="music-card" data-track="2">
+                        <div class="card-image">
+                            <img src="images/track3.jpg" alt="存在">
+                            <div class="play-overlay">
+                                <button class="card-play-btn">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">存在</h3>
+                            <p class="card-subtitle">Existence</p>
+                            <div class="card-links">
+                                <a href="#" class="platform-link spotify">Spotify</a>
+                                <a href="#" class="platform-link youtube">YouTube</a>
+                                <a href="#" class="platform-link apple">Apple Music</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
-    </div>
+    </main>
 
-    <!-- 音頻視覺化 -->
-    <div class="audio-visualizer" id="audioVisualizer"></div>
-
-    <!-- 隱藏的音頻元素 -->
-    <audio id="backgroundAudio" loop>
-        <source src="willwi_music.mp3" type="audio/mpeg">
-        您的瀏覽器不支援音頻播放。
+    <!-- 音頻元素 -->
+    <audio id="audioPlayer" preload="metadata">
+        <source src="music/track1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
     </audio>
 
-    <script>
-        // 音頻和播放器相關變數
-        let audio = document.getElementById('backgroundAudio');
-        let isPlaying = false;
-        let currentSongIndex = 0;
-        
-        // 歌曲列表
-        const playlist = [
-            { title: '靜默退場', artist: 'Willwi', src: 'willwi_music.mp3' },
-            { title: 'Silent Exit', artist: 'Willwi', src: 'willwi_music.mp3' }
-        ];
-
-        // 游標跟蹤
-        let cursor = document.querySelector('.cursor');
-        let cursorTrails = [];
-        
-        // 創建游標軌跡
-        for (let i = 0; i < 5; i++) {
-            let trail = document.createElement('div');
-            trail.className = 'cursor-trail';
-            document.body.appendChild(trail);
-            cursorTrails.push(trail);
-        }
-
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            
-            // 更新軌跡位置
-            cursorTrails.forEach((trail, index) => {
-                setTimeout(() => {
-                    trail.style.left = e.clientX + 'px';
-                    trail.style.top = e.clientY + 'px';
-                    trail.style.transform = `translate(-50%, -50%) scale(${1 - index * 0.2})`;
-                }, index * 50);
-            });
-        });
-
-        // 矩陣雨效果
-        function createMatrixRain() {
-            const matrixBg = document.getElementById('matrixBg');
-            const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン靜默退場WillwiEDMKPOP';
-            
-            for (let i = 0; i < 50; i++) {
-                let column = document.createElement('div');
-                column.className = 'matrix-column';
-                column.style.left = Math.random() * 100 + '%';
-                column.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                column.style.animationDelay = Math.random() * 2 + 's';
-                
-                let text = '';
-                for (let j = 0; j < 20; j++) {
-                    text += characters[Math.floor(Math.random() * characters.length)] + '<br>';
-                }
-                column.innerHTML = text;
-                
-                matrixBg.appendChild(column);
-            }
-        }
-
-        // 粒子系統
-        function createParticles() {
-            const particles = document.getElementById('particles');
-            
-            for (let i = 0; i < 100; i++) {
-                let particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                particles.appendChild(particle);
-            }
-        }
-
-        // 音頻視覺化
-        function createAudioVisualizer() {
-            const visualizer = document.getElementById('audioVisualizer');
-            
-            for (let i = 0; i < 100; i++) {
-                let bar = document.createElement('div');
-                bar.className = 'visualizer-bar';
-                bar.style.animationDelay = Math.random() * 1 + 's';
-                bar.style.animationDuration = (Math.random() * 0.5 + 0.3) + 's';
-                visualizer.appendChild(bar);
-            }
-        }
-
-        // 打字機效果
-        function typeWriter() {
-            const texts = [
-                '音樂無界，夢想不滅...',
-                'Music knows no boundaries, dreams never die...',
-                '音楽に境界はなく、夢は決して死なない...',
-                '靜默退場，但音樂永恆...'
-            ];
-            let textIndex = 0;
-            let charIndex = 0;
-            const typewriterElement = document.getElementById('typewriter');
-            
-            function type() {
-                if (charIndex < texts[textIndex].length) {
-                    typewriterElement.textContent += texts[textIndex].charAt(charIndex);
-                    charIndex++;
-                    setTimeout(type, 100);
-                } else {
-                    setTimeout(() => {
-                        typewriterElement.textContent = '';
-                        charIndex = 0;
-                        textIndex = (textIndex + 1) % texts.length;
-                        setTimeout(type, 500);
-                    }, 2000);
-                }
-            }
-            
-            type();
-        }
-
-        // 音樂播放器功能
-        function initMusicPlayer() {
-            const playBtn = document.getElementById('playBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const progressBar = document.getElementById('progressBar');
-            const progress = document.getElementById('progress');
-            const currentTimeEl = document.getElementById('currentTime');
-            const durationEl = document.getElementById('duration');
-            const volumeSlider = document.getElementById('volumeSlider');
-
-            // 播放/暫停
-            playBtn.addEventListener('click', () => {
-                if (isPlaying) {
-                    audio.pause();
-                    playBtn.textContent = '▶';
-                    isPlaying = false;
-                } else {
-                    audio.play().catch(e => console.log('播放失敗:', e));
-                    playBtn.textContent = '⏸';
-                    isPlaying = true;
-                }
-            });
-
-            // 上一首
-            prevBtn.addEventListener('click', () => {
-                currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
-                loadSong(currentSongIndex);
-            });
-
-            // 下一首
-            nextBtn.addEventListener('click', () => {
-                currentSongIndex = (currentSongIndex + 1) % playlist.length;
-                loadSong(currentSongIndex);
-            });
-
-            // 進度條
-            progressBar.addEventListener('click', (e) => {
-                const rect = progressBar.getBoundingClientRect();
-                const percent = (e.clientX - rect.left) / rect.width;
-                audio.currentTime = percent * audio.duration;
-            });
-
-            // 音量控制
-            volumeSlider.addEventListener('input', (e) => {
-                audio.volume = e.target.value / 100;
-            });
-
-            // 更新進度
-            audio.addEventListener('timeupdate', () => {
-                if (audio.duration) {
-                    const percent = (audio.currentTime / audio.duration) * 100;
-                    progress.style.width = percent + '%';
-                    currentTimeEl.textContent = formatTime(audio.currentTime);
-                    durationEl.textContent = formatTime(audio.duration);
-                }
-            });
-
-            // 歌曲結束
-            audio.addEventListener('ended', () => {
-                nextBtn.click();
-            });
-
-            // 設置初始音量
-            audio.volume = 0.5;
-        }
-
-        // 載入歌曲
-        function loadSong(index) {
-            const song = playlist[index];
-            document.getElementById('currentSong').textContent = song.title;
-            document.getElementById('currentArtist').textContent = song.artist;
-            audio.src = song.src;
-            
-            if (isPlaying) {
-                audio.play().catch(e => console.log('播放失敗:', e));
-            }
-        }
-
-        // 時間格式化
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // 語言切換
-        function switchLanguage(lang) {
-            // 移除所有活動狀態
-            document.querySelectorAll('.lang-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.lang-content').forEach(content => content.classList.remove('active'));
-            
-            // 添加活動狀態
-            event.target.classList.add('active');
-            document.getElementById(lang + '-content').classList.add('active');
-        }
-
-        // 滾動到指定區塊
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-
-        // 載入完成
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('hidden');
-                document.getElementById('mainContent').classList.add('loaded');
-                
-                // 初始化效果
-                createMatrixRain();
-                createParticles();
-                createAudioVisualizer();
-                typeWriter();
-                initMusicPlayer();
-                
-                // 載入第一首歌
-                loadSong(0);
-                
-                // 嘗試自動播放（某些瀏覽器可能會阻止）
-                setTimeout(() => {
-                    audio.play().then(() => {
-                        document.getElementById('playBtn').textContent = '⏸';
-                        isPlaying = true;
-                    }).catch(e => {
-                        console.log('自動播放被阻止，請手動點擊播放按鈕');
-                    });
-                }, 1000);
-                
-            }, 3000);
-        });
-
-        // 滾動視差效果
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.grid-bg');
-            const speed = scrolled * 0.5;
-            parallax.style.transform = `translate(${speed}px, ${speed}px)`;
-        });
-
-        // 滑鼠懸停效果
-        document.querySelectorAll('.music-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                cursor.style.width = '40px';
-                cursor.style.height = '40px';
-                cursor.style.borderColor = '#ff00ff';
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                cursor.style.width = '20px';
-                cursor.style.height = '20px';
-                cursor.style.borderColor = '#00ffff';
-            });
-        });
-
-        // 導航連結點擊事件
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                scrollToSection(targetId);
-            });
-        });
-    </script>
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
 </body>
 </html>
 
