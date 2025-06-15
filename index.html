@@ -1,271 +1,1376 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WILLWI | 賽博音樂創作者</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Willwi | 陳威兒 - 賽博音樂創作者</title>
+  <meta name="description" content="Willwi 陳威兒 - 融合EDM、K-POP與全球音樂風格的賽博音樂創作者">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- AOS 動畫庫 -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <style>
+    /* 基礎樣式 */
+    :root {
+      --neon-cyan: #00ffff;
+      --neon-pink: #ff00ff;
+      --neon-yellow: #ffff00;
+      --neon-green: #00ff00;
+      --dark-bg: #0a0a0a;
+      --darker-bg: #050505;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(0, 255, 255, 0.2);
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+      --grid-color: rgba(0, 255, 255, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+      cursor: none;
+    }
+    
+    /* 自定義游標 */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: all 0.1s ease;
+      transform: translate(-50%, -50%);
+    }
+    
+    .cursor-trail {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+    
+    /* 載入畫面 */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--darker-bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 1s ease-out;
+    }
+    
+    .loading-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 4rem;
+      font-weight: 900;
+      color: var(--neon-cyan);
+      text-shadow: 
+        0 0 10px var(--neon-cyan),
+        0 0 20px var(--neon-cyan),
+        0 0 40px var(--neon-cyan);
+      animation: logo-pulse 2s ease-in-out infinite;
+      margin-bottom: 2rem;
+    }
+    
+    @keyframes logo-pulse {
+      0%, 100% {
+        transform: scale(1);
+        text-shadow: 
+          0 0 10px var(--neon-cyan),
+          0 0 20px var(--neon-cyan),
+          0 0 40px var(--neon-cyan);
+      }
+      50% {
+        transform: scale(1.05);
+        text-shadow: 
+          0 0 20px var(--neon-cyan),
+          0 0 30px var(--neon-cyan),
+          0 0 50px var(--neon-cyan),
+          0 0 70px var(--neon-cyan);
+      }
+    }
+    
+    .loading-bar {
+      width: 300px;
+      height: 4px;
+      background: rgba(0, 255, 255, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .loading-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+      border-radius: 2px;
+      animation: loading-fill 3s ease-out forwards;
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+    
+    @keyframes loading-fill {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    
+    /* 主內容區 */
+    .main-content {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+    
+    .main-content.loaded {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* 導航欄 */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 0.5rem 1rem;
+    }
+    
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--neon-cyan);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+      box-shadow: 0 0 5px var(--neon-cyan);
+    }
+    
+    .nav-link:hover {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 5px var(--neon-cyan);
+    }
+    
+    .nav-link:hover::before {
+      width: 100%;
+    }
+    
+    /* 音樂播放器 */
+    .music-player {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 200;
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      padding: 1rem;
+      min-width: 300px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    
+    .player-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .album-art {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      animation: rotate 10s linear infinite;
+    }
+    
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+    
+    .song-details h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-cyan);
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    
+    .song-details p {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+    
+    .player-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .control-btn {
+      background: none;
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    
+    .control-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--dark-bg);
+      box-shadow: 0 0 15px var(--neon-cyan);
+    }
+    
+    .play-btn {
+      width: 50px;
+      height: 50px;
+      font-size: 1.2rem;
+    }
+    
+    .progress-container {
+      margin-bottom: 1rem;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+      width: 0%;
+      transition: width 0.1s ease;
+      box-shadow: 0 0 5px var(--neon-cyan);
+    }
+    
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+    
+    .volume-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .volume-slider {
+      flex: 1;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    
+    /* 英雄區塊 */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      padding: 0 2rem;
+    }
+    
+    .hero-profile {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-bottom: 2rem;
+      border: 3px solid var(--neon-cyan);
+      box-shadow: 
+        0 0 20px var(--neon-cyan),
+        inset 0 0 20px rgba(0, 255, 255, 0.2);
+      animation: profile-glow 3s ease-in-out infinite;
+      object-fit: cover;
+    }
+    
+    @keyframes profile-glow {
+      0%, 100% {
+        box-shadow: 
+          0 0 20px var(--neon-cyan),
+          inset 0 0 20px rgba(0, 255, 255, 0.2);
+      }
+      50% {
+        box-shadow: 
+          0 0 40px var(--neon-cyan),
+          0 0 60px var(--neon-cyan),
+          inset 0 0 30px rgba(0, 255, 255, 0.4);
+      }
+    }
+    
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(3rem, 8vw, 8rem);
+      font-weight: 900;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink), var(--neon-yellow));
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 3s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+    
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    /* 音樂卡片區塊 */
+    .music-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.5s ease;
+      transform-style: preserve-3d;
+      text-align: center;
+    }
+    
+    .music-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(0, 255, 255, 0.2);
+    }
+    
+    .card-image {
+      margin-bottom: 1.5rem;
+    }
+    
+    .album-cover {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px;
+      transition: transform 0.3s ease;
+    }
+    
+    .album-cover:hover {
+      transform: scale(1.05);
+    }
+    
+    .placeholder-image {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto;
+      animation: rotate 10s linear infinite;
+    }
+    
+    .music-card h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-cyan);
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .music-card p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    
+    .card-link {
+      padding: 0.5rem 1rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 15px;
+      color: var(--neon-cyan);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    
+    .card-link:hover {
+      background: var(--neon-cyan);
+      color: var(--dark-bg);
+      box-shadow: 0 0 15px var(--neon-cyan);
+    }
+    
+    /* 認證展示區塊 */
+    .certification-section {
+      padding: 5rem 2rem;
+      background: linear-gradient(135deg, rgba(0,255,255,0.05), rgba(255,0,255,0.05));
+      position: relative;
+    }
+    
+    .certification-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .certification-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    
+    .certification-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: all 0.5s ease;
+    }
+    
+    .certification-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 15px 30px rgba(0, 0, 0, 0.2),
+        0 0 25px rgba(0, 255, 255, 0.15);
+    }
+    
+    .cert-image {
+      flex-shrink: 0;
+    }
+    
+    .cert-img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid var(--neon-cyan);
+    }
+    
+    .cert-badge {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .badge-icon {
+      font-size: 2rem;
+      color: var(--dark-bg);
+    }
+    
+    .cert-content h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--neon-cyan);
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cert-issuer {
+      color: var(--neon-pink);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    
+    .cert-date {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cert-description {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    
+    /* 聯絡我區塊 */
+    .contact-section {
+      padding: 5rem 2rem;
+      background: var(--dark-bg);
+      position: relative;
+    }
+    
+    .contact-container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .contact-form {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-top: 3rem;
+    }
+    
+    .form-group {
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    
+    .form-group label {
+      display: block;
+      color: var(--neon-cyan);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    
+    .submit-btn {
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+      color: var(--dark-bg);
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 25px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+    }
+    
+    .contact-intro {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .contact-info {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--glass-border);
+    }
+    
+    .contact-email a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .contact-email a:hover {
+      color: var(--neon-pink);
+    }
+    
+    /* 頁尾樣式 */
+    .footer {
+      background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,20,0.9));
+      padding: 3rem 2rem 2rem;
+      border-top: 1px solid var(--glass-border);
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .social-section h3 {
+      color: var(--neon-cyan);
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+    }
+    
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    
+    .social-link {
+      display: block;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    
+    .social-link:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+      border-color: var(--neon-cyan);
+    }
+    
+    .social-icon {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+    
+    .youtube-icon {
+      font-size: 1.5rem;
+      color: var(--neon-cyan);
+    }
+    
+    .footer-info {
+      border-top: 1px solid var(--glass-border);
+      padding-top: 2rem;
+    }
+    
+    .footer-quote {
+      color: var(--neon-pink);
+      font-style: italic;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .copyright {
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-info .contact-info {
+      margin-top: 0.5rem;
+      padding-top: 0;
+      border-top: none;
+    }
+    
+    .footer-info .contact-info a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+    }
+    
+    .footer-info .contact-info a:hover {
+      color: var(--neon-pink);
+    }
+    
+    /* 關於我區塊 */
+    .about-section {
+      padding: 5rem 2rem;
+      background: linear-gradient(135deg, rgba(0,255,255,0.05), rgba(255,0,255,0.05));
+      position: relative;
+    }
+    
+    /* 語言切換標籤 */
+    .language-tabs {
+      display: flex !important;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .lang-tab {
+      padding: 0.5rem 1.5rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 25px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      display: block !important;
+      visibility: visible !important;
+    }
+    
+    .lang-tab.active {
+      background: var(--neon-cyan);
+      color: var(--dark-bg);
+      box-shadow: 0 0 20px var(--neon-cyan);
+    }
+    
+    /* 語言內容 */
+    .lang-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .lang-content.active {
+      display: block;
+      opacity: 1;
+    }
+    
+    /* 音樂網格 */
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .section-title {
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      background: linear-gradient(45deg, var(--neon-cyan), var(--neon-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .music-player {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 2rem auto;
+        max-width: 90%;
+      }
+      
+      .hero-title {
+        font-size: 3rem;
+      }
+    }
+    
+    /* 更多響應式樣式... */
+  </style>
 </head>
 <body>
-    <!-- 背景動畫 -->
-    <div class="cyber-background">
-        <div class="grid-overlay"></div>
-        <div class="floating-particles"></div>
+  <!-- 自定義游標 -->
+  <div class="cursor"></div>
+  <div class="cursor-trail"></div>
+  
+  <!-- 載入畫面 -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-logo">WILLWI</div>
+    <div class="loading-bar">
+      <div class="loading-progress"></div>
     </div>
-
+  </div>
+  
+  <!-- 主內容 -->
+  <div class="main-content" id="mainContent">
     <!-- 導航欄 -->
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-text">WILLWI</span>
-            </div>
-            <div class="nav-menu">
-                <a href="#home" class="nav-link active" data-lang="zh">首頁</a>
-                <a href="#music" class="nav-link" data-lang="zh">音樂作品</a>
-                <a href="#about" class="nav-link" data-lang="zh">關於我</a>
-            </div>
-            <div class="language-selector">
-                <button class="lang-btn active" data-lang="zh">中文</button>
-                <button class="lang-btn" data-lang="en">English</button>
-                <button class="lang-btn" data-lang="ja">日本語</button>
-            </div>
+      <div class="nav-container">
+        <a href="#" class="logo">WILLWI</a>
+        <div class="nav-links">
+          <a href="#home" class="nav-link">首頁</a>
+          <a href="#music" class="nav-link">音樂作品</a>
+          <a href="#about" class="nav-link">關於我</a>
+          <a href="#certifications" class="nav-link">認證</a>
+          <a href="#contact" class="nav-link">聯絡我</a>
         </div>
+      </div>
     </nav>
-
-    <!-- 音樂播放器 -->
-    <div class="music-player">
-        <div class="player-container">
-            <div class="player-info">
-                <div class="album-art">
-                    <img src="images/avatar.jpg" alt="Willwi" id="albumArt">
-                </div>
-                <div class="track-info">
-                    <div class="track-title" id="trackTitle">靜默退場</div>
-                    <div class="artist-name">Willwi</div>
-                </div>
-            </div>
-            <div class="player-controls">
-                <button class="control-btn" id="prevBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M19 20L9 12L19 4V20Z" fill="currentColor"/>
-                        <path d="M5 19V5" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </button>
-                <button class="control-btn play-btn" id="playBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" id="playIcon">
-                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-                    </svg>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" id="pauseIcon" style="display: none;">
-                        <path d="M6 4H10V20H6V4Z" fill="currentColor"/>
-                        <path d="M14 4H18V20H14V4Z" fill="currentColor"/>
-                    </svg>
-                </button>
-                <button class="control-btn" id="nextBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M5 4L15 12L5 20V4Z" fill="currentColor"/>
-                        <path d="M19 5V19" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="player-progress">
-                <div class="time-display">
-                    <span id="currentTime">0:00</span>
-                    <span id="totalTime">0:00</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-track">
-                        <div class="progress-fill" id="progressFill"></div>
-                        <div class="progress-handle" id="progressHandle"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="volume-control">
-                <button class="volume-btn" id="volumeBtn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="currentColor"/>
-                        <path d="M19.07 4.93C20.9 6.76 20.9 9.24 19.07 11.07" stroke="currentColor" stroke-width="2"/>
-                        <path d="M15.54 8.46C16.4 9.32 16.4 10.68 15.54 11.54" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </button>
-                <div class="volume-slider">
-                    <div class="volume-track">
-                        <div class="volume-fill" id="volumeFill"></div>
-                        <div class="volume-handle" id="volumeHandle"></div>
-                    </div>
-                </div>
-            </div>
+    
+    <!-- 英雄區塊 -->
+    <section class="hero" id="home">
+      <img src="images/willwi_portrait.png" alt="Willwi Profile" class="hero-profile">
+      <h1 class="hero-title">WILLWI</h1>
+      <p class="hero-subtitle">獨立音樂人 | 創作歌手</p>
+      <p class="hero-new-song">🎵 最新單曲《靜默退場》現已發布</p>
+    </section>
+    
+    <!-- 音樂作品區塊 -->
+    <section class="music-section" id="music">
+      <h2 class="section-title">音樂作品 | MUSIC WORKS</h2>
+      <div class="music-grid">
+        <div class="music-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="card-image">
+            <img src="albums/album-silent-exit.jpg" alt="靜默退場專輯封面" class="album-cover">
+          </div>
+          <h3>靜默退場</h3>
+          <p>最新單曲 - 2025</p>
+          <div class="card-actions">
+            <a href="https://www.youtube.com/watch?v=example1" target="_blank" class="card-link">YouTube</a>
+            <a href="https://open.spotify.com/track/example1" target="_blank" class="card-link">Spotify</a>
+          </div>
         </div>
+        
+        <div class="music-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="card-image">
+            <img src="albums/album-existence.jpg" alt="存在專輯封面" class="album-cover">
+          </div>
+          <h3>存在する意味</h3>
+          <p>電子音樂 - 2024</p>
+          <div class="card-actions">
+            <a href="https://www.youtube.com/watch?v=example2" target="_blank" class="card-link">YouTube</a>
+            <a href="https://open.spotify.com/track/example2" target="_blank" class="card-link">Spotify</a>
+          </div>
+        </div>
+        
+        <div class="music-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="card-image">
+            <img src="albums/album-timeline.jpg" alt="時間線專輯封面" class="album-cover">
+          </div>
+          <h3>時間線</h3>
+          <p>賽博風格 - 2024</p>
+          <div class="card-actions">
+            <a href="https://www.youtube.com/watch?v=example3" target="_blank" class="card-link">YouTube</a>
+            <a href="https://open.spotify.com/track/example3" target="_blank" class="card-link">Spotify</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 關於我區塊 -->
+    <section class="about-section" id="about">
+      <div class="about-container">
+        <h2 class="section-title">關於我 | ABOUT ME</h2>
+        
+        <div class="language-tabs">
+          <div class="lang-tab active" onclick="switchLanguage('zh')">中文</div>
+          <div class="lang-tab" onclick="switchLanguage('en')">English</div>
+          <div class="lang-tab" onclick="switchLanguage('ja')">日本語</div>
+        </div>
+        
+        <div class="lang-content active" id="zh-content">
+          <p class="about-text">
+            大家好，我是 Willwi（陳威兒）—— 一位來自台灣的獨立創作歌手，擅長融合中文、日文、韓文多語言詞曲，並將 EDM 電子樂與 K-POP 流行元素交織成詩性聲響。我的音樂來自靈魂，也來自一段段不能被定義的記憶。
+          </p>
+        </div>
+        
+        <div class="lang-content" id="en-content">
+          <p class="about-text">
+            Hello everyone, I'm Willwi (Chen Wei-Er) — an independent singer-songwriter from Taiwan who specializes in blending multilingual lyrics in Chinese, Japanese, and Korean, weaving EDM electronic music with K-POP elements into poetic soundscapes. My music comes from the soul, born from memories that cannot be defined.
+          </p>
+        </div>
+        
+        <div class="lang-content" id="ja-content">
+          <p class="about-text">
+            皆さん、こんにちは。私はWillwi（陳威兒）です。台湾出身の独立系シンガーソングライターで、中国語、日本語、韓国語の多言語歌詞を得意とし、EDMエレクトロニック音楽とK-POPの要素を詩的なサウンドスケープに織り込んでいます。私の音楽は魂から生まれ、定義できない記憶の断片から生まれています。
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 認證展示區塊 -->
+    <section class="certification-section" id="certifications">
+      <div class="certification-container">
+        <h2 class="section-title">專業認證 | CERTIFICATIONS</h2>
+        <div class="certification-grid">
+          <div class="certification-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="cert-image">
+              <img src="images/證書.jpeg" alt="Musixmatch Academy 認證" class="cert-img">
+            </div>
+            <div class="cert-content">
+              <h3>Musixmatch Graduate</h3>
+              <p class="cert-issuer">Musixmatch Academy</p>
+              <p class="cert-date">Class of March 2025</p>
+              <p class="cert-description">完成寫作指南課程，成為認證歌詞編輯者</p>
+            </div>
+          </div>
+          
+          <div class="certification-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="cert-badge">
+              <div class="badge-icon">🎵</div>
+            </div>
+            <div class="cert-content">
+              <h3>YouTube OAC 認證</h3>
+              <p class="cert-issuer">YouTube Official Artist Channel</p>
+              <p class="cert-date">2024</p>
+              <p class="cert-description">官方藝術家頻道認證，音樂創作者身份驗證</p>
+            </div>
+          </div>
+          
+          <div class="certification-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="cert-badge">
+              <div class="badge-icon">🎹</div>
+            </div>
+            <div class="cert-content">
+              <h3>英國皇家音樂學院</h3>
+              <p class="cert-issuer">ABRSM Piano Grade 5</p>
+              <p class="cert-date">17歲通過</p>
+              <p class="cert-description">鋼琴五級認證，奠定音樂理論基礎</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 聯絡我區塊 -->
+    <section class="contact-section" id="contact">
+      <div class="contact-container">
+        <h2 class="section-title">與我聯絡 | CONTACT ME</h2>
+        <p class="contact-intro">有合作機會或想法分享？歡迎與我聯絡！</p>
+        
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label for="name">姓名 / Name *</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">電子郵件 / Email *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="subject">主旨 / Subject *</label>
+            <input type="text" id="subject" name="subject" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">訊息內容 / Message *</label>
+            <textarea id="message" name="message" placeholder="請告訴我您的想法或合作提案..." required></textarea>
+          </div>
+          
+          <button type="submit" class="submit-btn">發送訊息</button>
+        </form>
+        
+        <div class="contact-info">
+          <p class="contact-email">商業合作：<a href="mailto:contact@willwi.com">contact@willwi.com</a></p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 頁尾 -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="social-section">
+          <h3>追蹤我的音樂</h3>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/willwichen" target="_blank" class="social-link" title="Facebook">
+              <img src="icons/facebook.png" alt="Facebook" class="social-icon">
+            </a>
+            <a href="https://www.instagram.com/willchen_0709" target="_blank" class="social-link" title="Instagram">
+              <img src="icons/instagram.png" alt="Instagram" class="social-icon">
+            </a>
+            <a href="https://www.youtube.com/@WillChen88" target="_blank" class="social-link" title="YouTube">
+              <div class="social-icon youtube-icon">📺</div>
+            </a>
+            <a href="https://open.spotify.com/artist/3ascZ8Rb2KDw4QyCy29Om4" target="_blank" class="social-link" title="Spotify">
+              <img src="icons/spotify-logo.png" alt="Spotify" class="social-icon">
+            </a>
+            <a href="https://music.apple.com/profile/willwi" target="_blank" class="social-link" title="Apple Music">
+              <img src="icons/apple-music-logo.png" alt="Apple Music" class="social-icon">
+            </a>
+            <a href="https://music.youtube.com/channel/UCW..." target="_blank" class="social-link" title="YouTube Music">
+              <img src="icons/youtube-music-logo.png" alt="YouTube Music" class="social-icon">
+            </a>
+          </div>
+        </div>
+        
+        <div class="footer-info">
+          <p class="footer-quote">"世界或許喧囂，但真正的聲音，自帶座標"</p>
+          <p class="copyright">© 2025 Willwi 陳威兒. 版權所有 | 獨立音樂人 · 創作歌手</p>
+          <p class="contact-info">商業合作：<a href="mailto:contact@willwi.com">contact@willwi.com</a></p>
+        </div>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- 音樂播放器 -->
+  <div class="music-player" id="musicPlayer">
+    <div class="player-info">
+      <div class="album-art">♪</div>
+      <div class="song-details">
+        <h3 id="currentSong">靜默退場</h3>
+        <p id="currentArtist">Willwi</p>
+      </div>
     </div>
-
-    <!-- 主要內容 -->
-    <main class="main-content">
-        <!-- 首頁區塊 -->
-        <section id="home" class="hero-section">
-            <div class="hero-container">
-                <div class="profile-section">
-                    <div class="profile-image">
-                        <div class="profile-ring">
-                            <img src="images/avatar.jpg" alt="Willwi Profile" class="profile-avatar">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hero-content">
-                    <h1 class="hero-title">
-                        <span class="title-main">WILLWI</span>
-                    </h1>
-                    <p class="hero-subtitle">
-                        <span data-lang="zh">賽博音樂創作者 | Cyber Music Creator</span>
-                        <span data-lang="en" style="display: none;">Cyber Music Creator</span>
-                        <span data-lang="ja" style="display: none;">サイバー音楽クリエイター</span>
-                    </p>
-                    
-                    <div class="latest-release">
-                        <div class="release-icon">🎵</div>
-                        <span data-lang="zh">最新單曲《靜默退場》現已發布</span>
-                        <span data-lang="en" style="display: none;">Latest Single "Silent Exit" Now Available</span>
-                        <span data-lang="ja" style="display: none;">最新シングル「静寂退場」配信中</span>
-                    </div>
-                    
-                    <div class="hero-quote">
-                        <p data-lang="zh">音樂に境界はなく、夢は決して死なない...</p>
-                        <p data-lang="en" style="display: none;">Music has no boundaries, dreams never die...</p>
-                        <p data-lang="ja" style="display: none;">音楽に境界はなく、夢は決して死なない...</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 音頻波形視覺化 -->
-            <div class="audio-visualizer">
-                <div class="visualizer-bars"></div>
-            </div>
-        </section>
-
-        <!-- 關於我區塊 -->
-        <section id="about" class="about-section">
-            <div class="section-container">
-                <h2 class="section-title">
-                    <span data-lang="zh">關於我 | ABOUT ME</span>
-                    <span data-lang="en" style="display: none;">ABOUT ME</span>
-                    <span data-lang="ja" style="display: none;">私について</span>
-                </h2>
-                
-                <div class="about-content">
-                    <div class="about-text">
-                        <p data-lang="zh">
-                            大家好，我是 Willwi（陳威兒）——一位來自台灣的獨立創作歌手，擅長融合中文、日文、韓文多語言音樂，並將 EDM 電子樂與 K-POP 流行元素交織成獨特聲響。我的音樂來自靈魂，也來自一段段不能被定義的記憶。
-                        </p>
-                        <p data-lang="en" style="display: none;">
-                            Hello, I'm Willwi (Chen Wei-Er) — an independent singer-songwriter from Taiwan, specializing in multilingual music that blends Chinese, Japanese, and Korean, weaving together EDM electronic music and K-POP elements into a unique sound. My music comes from the soul and from memories that cannot be defined.
-                        </p>
-                        <p data-lang="ja" style="display: none;">
-                            こんにちは、私はWillwi（陳威兒）です。台湾出身の独立系シンガーソングライターで、中国語、日本語、韓国語を融合した多言語音楽を得意とし、EDMエレクトロニック音楽とK-POPポップ要素を織り交ぜた独特なサウンドを創造しています。私の音楽は魂から生まれ、定義できない記憶の断片から生まれています。
-                        </p>
-                        
-                        <p data-lang="zh">
-                            我的創作風格擁有強烈個人標籤，受邀進駐 Musixmatch 國際詞庫平台，作品同步上架至 Spotify、Apple Music、YouTube Music 等串流平台，並通過 OAC 藝術家認證。
-                        </p>
-                        <p data-lang="en" style="display: none;">
-                            My creative style has a strong personal signature. I've been invited to join the Musixmatch international lyrics platform, with works simultaneously released on streaming platforms like Spotify, Apple Music, and YouTube Music, and certified through OAC artist verification.
-                        </p>
-                        <p data-lang="ja" style="display: none;">
-                            私の創作スタイルは強い個人的な特徴を持っており、Musixmatch国際歌詞プラットフォームに招待され、作品はSpotify、Apple Music、YouTube Musicなどのストリーミングプラットフォームに同時リリースされ、OACアーティスト認証を取得しています。
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 音樂作品區塊 -->
-        <section id="music" class="music-section">
-            <div class="section-container">
-                <h2 class="section-title">
-                    <span data-lang="zh">音樂作品</span>
-                    <span data-lang="en" style="display: none;">MUSIC WORKS</span>
-                    <span data-lang="ja" style="display: none;">音楽作品</span>
-                </h2>
-                
-                <div class="music-grid">
-                    <div class="music-card" data-track="0">
-                        <div class="card-image">
-                            <img src="images/track1.jpg" alt="靜默退場">
-                            <div class="play-overlay">
-                                <button class="card-play-btn">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">靜默退場</h3>
-                            <p class="card-subtitle">Silent Exit</p>
-                            <div class="card-links">
-                                <a href="#" class="platform-link spotify">Spotify</a>
-                                <a href="#" class="platform-link youtube">YouTube</a>
-                                <a href="#" class="platform-link apple">Apple Music</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="music-card" data-track="1">
-                        <div class="card-image">
-                            <img src="images/track2.jpg" alt="時間線">
-                            <div class="play-overlay">
-                                <button class="card-play-btn">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">時間線</h3>
-                            <p class="card-subtitle">Timeline</p>
-                            <div class="card-links">
-                                <a href="#" class="platform-link spotify">Spotify</a>
-                                <a href="#" class="platform-link youtube">YouTube</a>
-                                <a href="#" class="platform-link apple">Apple Music</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="music-card" data-track="2">
-                        <div class="card-image">
-                            <img src="images/track3.jpg" alt="存在">
-                            <div class="play-overlay">
-                                <button class="card-play-btn">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">存在</h3>
-                            <p class="card-subtitle">Existence</p>
-                            <div class="card-links">
-                                <a href="#" class="platform-link spotify">Spotify</a>
-                                <a href="#" class="platform-link youtube">YouTube</a>
-                                <a href="#" class="platform-link apple">Apple Music</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- 音頻元素 -->
-    <audio id="audioPlayer" preload="metadata">
-        <source src="music/track1.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-    <!-- JavaScript -->
-    <script src="js/main.js"></script>
+    <div class="player-controls">
+      <button class="control-btn" id="prevBtn">⏮</button>
+      <button class="control-btn play-btn" id="playBtn">▶</button>
+      <button class="control-btn" id="nextBtn">⏭</button>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <div class="time-display">
+        <span id="currentTime">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
+    </div>
+    <div class="volume-container">
+      <span>🔊</span>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+    </div>
+  </div>
+  
+  <!-- 隱藏的音頻元素 -->
+  <audio id="backgroundAudio" preload="metadata">
+    <source src="music/track1.mp3" type="audio/mpeg">
+    您的瀏覽器不支援音頻播放。
+  </audio>
+  
+  <!-- JavaScript 庫 -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  
+  <script>
+    // 初始化AOS動畫
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: false
+    });
+    
+    // 自定義游標跟蹤
+    const cursor = document.querySelector('.cursor');
+    const cursorTrails = [];
+    
+    // 創建游標軌跡
+    for (let i = 0; i < 5; i++) {
+      let trail = document.createElement('div');
+      trail.className = 'cursor-trail';
+      document.body.appendChild(trail);
+      cursorTrails.push(trail);
+    }
+    
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      
+      // 更新軌跡位置
+      cursorTrails.forEach((trail, index) => {
+        setTimeout(() => {
+          trail.style.left = e.clientX + 'px';
+          trail.style.top = e.clientY + 'px';
+          trail.style.transform = `translate(-50%, -50%) scale(${1 - index * 0.2})`;
+        }, index * 50);
+      });
+    });
+    
+    // 音樂播放器功能
+    let audio = document.getElementById('backgroundAudio');
+    let isPlaying = false;
+    let currentSongIndex = 0;
+    
+    const playlist = [
+      { title: '靜默退場', artist: 'Willwi', src: 'music/track1.mp3' },
+      { title: '賽博夢境', artist: 'Willwi', src: 'music/track2.mp3' },
+      { title: '霓虹之夜', artist: 'Willwi', src: 'music/track3.mp3' }
+    ];
+    
+    // 播放/暫停功能
+    function togglePlay() {
+      const playBtn = document.getElementById('playBtn');
+      if (audio && !isPlaying) {
+        // 模擬播放（因為沒有實際音頻檔案）
+        playBtn.innerHTML = '⏸';
+        isPlaying = true;
+        // 模擬進度條更新
+        simulateProgress();
+      } else {
+        playBtn.innerHTML = '▶';
+        isPlaying = false;
+        clearInterval(progressInterval);
+      }
+    }
+    
+    let progressInterval;
+    let currentTime = 0;
+    const totalDuration = 180; // 3分鐘模擬時長
+    
+    function simulateProgress() {
+      progressInterval = setInterval(() => {
+        if (isPlaying && currentTime < totalDuration) {
+          currentTime += 1;
+          updateProgressDisplay();
+        } else if (currentTime >= totalDuration) {
+          // 歌曲結束，自動播放下一首
+          nextTrack();
+        }
+      }, 1000);
+    }
+    
+    function updateProgressDisplay() {
+      const progress = document.getElementById('progress');
+      const currentTimeDisplay = document.getElementById('currentTime');
+      const durationDisplay = document.getElementById('duration');
+      
+      const progressPercent = (currentTime / totalDuration) * 100;
+      progress.style.width = progressPercent + '%';
+      
+      currentTimeDisplay.textContent = formatTime(currentTime);
+      durationDisplay.textContent = formatTime(totalDuration);
+    }
+    
+    // 上一首
+    function previousTrack() {
+      currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+      loadTrack(currentSongIndex);
+    }
+    
+    // 下一首
+    function nextTrack() {
+      currentSongIndex = (currentSongIndex + 1) % playlist.length;
+      loadTrack(currentSongIndex);
+    }
+    
+    // 載入音軌
+    function loadTrack(index) {
+      const track = playlist[index];
+      document.getElementById('currentSong').textContent = track.title;
+      document.getElementById('currentArtist').textContent = track.artist;
+      
+      // 重置進度
+      currentTime = 0;
+      updateProgressDisplay();
+      
+      if (isPlaying) {
+        clearInterval(progressInterval);
+        simulateProgress();
+      }
+    }
+    
+    // 語言切換功能
+    function switchLanguage(lang) {
+      // 移除所有active類
+      document.querySelectorAll('.lang-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.lang-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // 添加active類到選中的標籤和內容
+      document.querySelector(`[onclick="switchLanguage('${lang}')"]`).classList.add('active');
+      const content = document.getElementById(`${lang}-content`);
+      if (content) {
+        content.classList.add('active');
+      }
+      
+      // 確保語言標籤始終可見
+      document.querySelector('.language-tabs').style.display = 'flex';
+    }
+    
+    // 平滑滾動到錨點
+    function smoothScrollTo(target) {
+      const element = document.querySelector(target);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+    
+    // 載入完成後的初始化
+    window.addEventListener('load', function() {
+      // 隱藏載入畫面
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const mainContent = document.getElementById('mainContent');
+        
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+          mainContent.classList.add('loaded');
+        }, 1000);
+      }, 3000);
+      
+      // 初始化音樂播放器事件監聽器
+      const playBtn = document.getElementById('playBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      if (playBtn) playBtn.addEventListener('click', togglePlay);
+      if (prevBtn) prevBtn.addEventListener('click', previousTrack);
+      if (nextBtn) nextBtn.addEventListener('click', nextTrack);
+      
+      // 導航連結點擊事件
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = this.getAttribute('href');
+          smoothScrollTo(target);
+        });
+      });
+      
+      // 載入第一首歌
+      loadTrack(0);
+      
+      // 進度條點擊跳轉
+      const progressBar = document.getElementById('progressBar');
+      if (progressBar) {
+        progressBar.addEventListener('click', function(e) {
+          const rect = this.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const width = rect.width;
+          const clickPercent = clickX / width;
+          
+          currentTime = Math.floor(clickPercent * totalDuration);
+          updateProgressDisplay();
+        });
+      }
+      
+      // 音量控制
+      const volumeSlider = document.getElementById('volumeSlider');
+      if (volumeSlider) {
+        volumeSlider.addEventListener('input', function() {
+          // 模擬音量控制（視覺效果）
+          console.log('Volume set to:', this.value + '%');
+        });
+      }
+    });
+    
+    // 時間格式化
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // 聯絡表格處理
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 獲取表格數據
+        const formData = new FormData(this);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const subject = formData.get('subject');
+        const message = formData.get('message');
+        
+        // 創建郵件連結
+        const mailtoLink = `mailto:contact@willwi.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`姓名: ${name}\n電子郵件: ${email}\n\n訊息內容:\n${message}`)}`;
+        
+        // 打開郵件客戶端
+        window.location.href = mailtoLink;
+        
+        // 顯示成功訊息
+        alert('感謝您的聯絡！郵件客戶端將會開啟，請確認發送。');
+        
+        // 重置表格
+        this.reset();
+      });
+    }
+  </script>
 </body>
 </html>
+
